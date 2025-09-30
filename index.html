@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-PL2RGMKB");
+    </script>
+    <!-- End Google Tag Manager -->
+    <title>
+      Affiliate Program – Nền tảng quản lý chương trình Affiliate, sự kiện và
+      khuyến mãi của các thương hiệu L'Oréal Group
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="index-styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-PL2RGMKB"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <header>
+      <nav class="nav-container">
+        <div class="logo">
+          <img
+            src="https://bepstatic.tokywoky.com/group-584/LOGO-lorealistar.png"
+            alt="L'Oréal iStar"
+            class="logo-image"
+          />
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section id="hero" class="hero">
+        <div class="hero-content">
+          <h1 class="hero-title">
+            <span class="title-main"
+              >Chào mừng đến với Nền tảng Độc quyền dành cho Beauty Affiliates
+              Partners của L'Oréal Việt Nam</span
+            >
+            <span class="title-brand"
+              >Bạn đã sẵn sàng thăng hoa cùng L'Oréal?</span
+            >
+          </h1>
+          <p class="hero-description">
+            Đây là cánh cửa dẫn lối đến thế giới ưu đãi và thông tin nóng hổi
+            nhất từ L'Oréal: các chương trình Affiliate đỉnh cao, sự kiện danh
+            giá và khuyến mãi độc quyền từ những nhãn hàng làm đẹp hàng đầu.
+          </p>
+          <p class="hero-description-secondary">
+            Khám phá ngay để cùng L'Oréal kiến tạo vẻ đẹp và định hình xu hướng!
+          </p>
+          <div class="hero-features">
+            <div class="feature-item">
+              <span class="feature-icon">📊</span>
+              <span>Dữ liệu real-time</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">📅</span>
+              <span>Lịch sự kiện</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">🎯</span>
+              <span>Khuyến mãi hot</span>
+            </div>
+          </div>
+          <div class="hero-actions">
+            <a href="#hub" class="cta-button primary">
+              <span>Khám Phá Ngay</span>
+              <svg
+                class="cta-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="hub" class="hub-section">
+        <div class="container">
+          <div class="search-container">
+            <div class="search-wrapper">
+              <div class="search-icon">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="M21 21l-4.35-4.35" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                id="brandSearch"
+                placeholder="Tìm kiếm nhãn hàng..."
+                oninput="renderButtons()"
+                autocomplete="off"
+              />
+              <div class="search-suggestions" id="searchSuggestions"></div>
+            </div>
+            <div class="search-filters">
+              <button class="filter-chip active" data-filter="all">
+                📋 Tất cả thương hiệu
+              </button>
+              <button class="filter-chip" data-filter="promotion">
+                🏷️ Có khuyến mãi
+              </button>
+              <button class="filter-chip" data-filter="calendar">
+                📅 Có sự kiện
+              </button>
+              <button class="filter-chip" data-filter="active">
+                🔥 Có cả khuyến mãi & sự kiện
+              </button>
+            </div>
+          </div>
+
+          <div class="brands-container">
+            <div class="brands-header">
+              <h3 class="brands-title">Thương Hiệu</h3>
+              <div class="brands-count" id="brandsCount">0 thương hiệu</div>
+            </div>
+            <div id="brandButtons" class="brand-buttons">
+              <!-- Loading state will be rendered here by JS -->
+            </div>
+          </div>
+
+          <div id="brandDetail" class="detail-panel">
+            <!-- Detail content will be rendered here by JS -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <div class="footer-logo">
+            <img
+              src="https://tokybep.blob.core.windows.net/group-584/LOGO-lorealistar-white.png"
+              alt="L'Oréal iStar"
+              class="footer-logo-img"
+            />
+          </div>
+          <h2 class="footer-title">
+            Chào mừng đến với Nền tảng Độc quyền dành cho Beauty Affiliates
+            Partners của L'Oréal Việt Nam.
+          </h2>
+        </div>
+      </div>
+    </footer>
+
+    <div id="customTooltip" class="custom-tooltip"></div>
+
+    <!-- Product Info Popup -->
+    <div id="productInfoPopup" class="popup-overlay">
+      <div class="popup-content">
+        <div class="popup-header">
+          <h3 class="popup-title" id="popupTitle">Thông tin sản phẩm</h3>
+          <button class="popup-close" onclick="closeProductInfo()">
+            &times;
+          </button>
+        </div>
+        <div class="popup-body" id="popupBody">
+          <!-- Content will be inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <script src="firebase-config.js"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        onSnapshot,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      let brandsData = {};
+      let currentBrandKey = null;
+      let currentCalendarDate = new Date();
+
+      const cleanStr = (s) => String(s || "").trim();
+      const rmAccent = (s) =>
+        cleanStr(s)
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+      const norm = (s) => rmAccent(s).toLowerCase();
+      const currency = (n) => (Number(n) || 0).toLocaleString("vi-VN") + "đ";
+      const formatVoucher = (v) => {
+        const num = Number(v);
+        if (isNaN(num) || num === 0) return v || "";
+        return (
+          num
+            .toLocaleString("vi-VN", {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            })
+            .replace(/,/g, ".") + "đ"
+        );
+      };
+
+      // --- Popup Functions ---
+      window.showProductInfo = function (productName, productInfo) {
+        const popup = document.getElementById("productInfoPopup");
+        const title = document.getElementById("popupTitle");
+        const body = document.getElementById("popupBody");
+
+        title.textContent = productName || "Thông tin sản phẩm";
+        // Preserve line breaks from Google Sheets
+        const formattedProductInfo = (
+          productInfo || "Không có thông tin chi tiết."
+        )
+          .replace(/\n/g, "<br>")
+          .replace(/\r\n/g, "<br>");
+        body.innerHTML = `<p><strong>Chi tiết:</strong></p><p>${formattedProductInfo}</p>`;
+
+        popup.style.display = "flex";
+        document.body.style.overflow = "hidden"; // Prevent background scrolling
+      };
+
+      // Hàm mới để hiển thị chi tiết sự kiện calendar
+      window.showCalendarEventDetails = function (events) {
+        console.log("showCalendarEventDetails called with events:", events);
+
+        const popup = document.getElementById("productInfoPopup");
+        const title = document.getElementById("popupTitle");
+        const body = document.getElementById("popupBody");
+
+        if (!popup || !title || !body) {
+          console.error("Popup elements not found:", { popup, title, body });
+          return;
+        }
+
+        title.textContent = "Chi tiết Sự kiện";
+
+        let eventDetailsHTML = "";
+        [...new Set(events.map((t) => JSON.stringify(t)))]
+          .map((t) => JSON.parse(t))
+          .forEach((event, index) => {
+            if (index > 0)
+              eventDetailsHTML +=
+                "<hr style='margin: 15px 0; border-color: #ddd;'>";
+            eventDetailsHTML += `
+              <div style="margin-bottom: 15px;">
+                <h4 style="color: #2563eb; font-weight: bold; margin-bottom: 8px;">
+                  ${event.title || "Sự kiện"}
+                </h4>
+                <p style="margin-bottom: 8px; line-height: 1.5;">
+                  <strong>Thời gian:</strong> ${(() => {
+                    let startDate, endDate;
+
+                    if (
+                      event.startDate &&
+                      typeof event.startDate === "object" &&
+                      event.startDate.seconds
+                    ) {
+                      startDate = new Date(event.startDate.seconds * 1000);
+                    } else if (
+                      event.startDate &&
+                      typeof event.startDate === "object" &&
+                      event.startDate._seconds
+                    ) {
+                      startDate = new Date(event.startDate._seconds * 1000);
+                    } else {
+                      startDate = new Date(event.startDate);
+                    }
+
+                    if (
+                      event.endDate &&
+                      typeof event.endDate === "object" &&
+                      event.endDate.seconds
+                    ) {
+                      endDate = new Date(event.endDate.seconds * 1000);
+                    } else if (
+                      event.endDate &&
+                      typeof event.endDate === "object" &&
+                      event.endDate._seconds
+                    ) {
+                      endDate = new Date(event.endDate._seconds * 1000);
+                    } else {
+                      endDate = new Date(event.endDate);
+                    }
+
+                    return `${startDate.toLocaleDateString(
+                      "vi-VN"
+                    )} - ${endDate.toLocaleDateString("vi-VN")}`;
+                  })()}
+                </p>
+                ${
+                  event.description
+                    ? `
+                  <p style="margin-bottom: 8px; line-height: 1.5;">
+                    <strong>Mô tả:</strong> ${(event.description || "")
+                      .replace(/\n/g, "<br>")
+                      .replace(/\r\n/g, "<br>")}
+                  </p>
+                `
+                    : ""
+                }
+                ${
+                  event.link
+                    ? `
+                  <p style="margin-bottom: 8px;">
+                    <strong>Liên kết:</strong> 
+                    <a href="${event.link}" target="_blank" rel="noopener" 
+                       style="color: #2563eb; text-decoration: underline;">
+                      Xem chi tiết tại đây
+                    </a>
+                  </p>
+                `
+                    : ""
+                }
+              </div>
+            `;
+          });
+
+        body.innerHTML =
+          eventDetailsHTML || "<p>Không có thông tin chi tiết.</p>";
+
+        console.log("About to show popup");
+        popup.style.display = "flex";
+        document.body.style.overflow = "hidden";
+
+        // Force a repaint
+        popup.offsetHeight;
+        console.log("Popup should be visible now");
+      };
+
+      window.closeProductInfo = function () {
+        const popup = document.getElementById("productInfoPopup");
+        popup.style.display = "none";
+        document.body.style.overflow = "auto"; // Restore scrolling
+      };
+
+      // Close popup when clicking outside
+      document
+        .getElementById("productInfoPopup")
+        .addEventListener("click", function (e) {
+          if (e.target === this) {
+            closeProductInfo();
+          }
+        });
+
+      // Close popup with Escape key
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          closeProductInfo();
+        }
+      });
+
+      // Event delegation for product info buttons
+      document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("product-info-btn")) {
+          const productName = e.target.getAttribute("data-product-name");
+          const productInfo = e.target.getAttribute("data-product-info");
+          showProductInfo(productName, productInfo);
+        }
+      });
+
+      // --- Enhanced Loading States ---
+      const renderSkeletonBrands = () => {
+        const container = document.getElementById("brandButtons");
+        if (!container) return;
+
+        container.innerHTML = `
+          <div class="skeleton-brand-grid">
+            ${Array.from(
+              { length: 8 },
+              () => '<div class="skeleton skeleton-brand-item"></div>'
+            ).join("")}
+          </div>
+        `;
+      };
+
+      const renderSkeletonDetail = () => {
+        const container = document.getElementById("brandDetail");
+        if (!container) return;
+
+        container.innerHTML = `
+          <div class="skeleton-text long"></div>
+          <div class="skeleton-text medium"></div>
+          <div class="skeleton-text short"></div>
+          <div style="margin-top: 24px;">
+            <div class="skeleton-text long"></div>
+            <div class="skeleton-text long"></div>
+            <div class="skeleton-text medium"></div>
+          </div>
+        `;
+      };
+
+      const renderStatus = (containerId, type, message) => {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        let icon = "";
+        if (type === "loading") {
+          icon = '<div class="spinner"></div>';
+        } else if (type === "empty") {
+          icon = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16" style="margin-bottom: 15px; color: var(--text-muted);"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.064.293.006.399.287.47l.45.082.082-.38-.287-.072a.266.266 0 0 1-.213-.316l.75-3.507a.266.266 0 0 1 .316-.213l2.29-.287zM8 5.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></svg>`;
+        } else if (type === "error") {
+          icon = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-exclamation-triangle" viewBox="0 0 16 16" style="margin-bottom: 15px; color: var(--danger-border);"><path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/><path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/></svg>`;
+        }
+
+        container.innerHTML = `<div class="status-wrapper">${icon}<p>${message}</p></div>`;
+      };
+
+      // Initial Loading State
+      renderSkeletonBrands();
+      renderSkeletonDetail();
+
+      // Enhanced search and filter functionality
+      let currentFilter = "all";
+      let searchSuggestions = [];
+
+      // Initialize filter chips
+      document.addEventListener("DOMContentLoaded", function () {
+        const filterChips = document.querySelectorAll(".filter-chip");
+        filterChips.forEach((chip) => {
+          chip.addEventListener("click", function () {
+            // Remove active class from all chips
+            filterChips.forEach((c) => c.classList.remove("active"));
+            // Add active class to clicked chip
+            this.classList.add("active");
+            currentFilter = this.getAttribute("data-filter");
+            renderButtons();
+          });
+        });
+
+        // Enhanced search functionality
+        const searchInput = document.getElementById("brandSearch");
+        const suggestionsContainer =
+          document.getElementById("searchSuggestions");
+
+        if (searchInput) {
+          searchInput.addEventListener("input", function () {
+            const query = this.value.toLowerCase();
+            if (query.length > 0) {
+              showSearchSuggestions(query);
+            } else {
+              hideSearchSuggestions();
+            }
+            renderButtons();
+          });
+
+          searchInput.addEventListener("focus", function () {
+            if (this.value.length > 0) {
+              showSearchSuggestions(this.value.toLowerCase());
+            }
+          });
+
+          searchInput.addEventListener("blur", function () {
+            // Delay hiding to allow clicking on suggestions
+            setTimeout(hideSearchSuggestions, 200);
+          });
+        }
+      });
+
+      function showSearchSuggestions(query) {
+        const suggestionsContainer =
+          document.getElementById("searchSuggestions");
+        if (!suggestionsContainer) return;
+
+        const matchingBrands = Object.values(brandsData)
+          .filter((brand) => norm(brand.name).includes(norm(query)))
+          .slice(0, 5);
+
+        if (matchingBrands.length > 0) {
+          suggestionsContainer.innerHTML = matchingBrands
+            .map(
+              (brand) =>
+                `<div class="search-suggestion" onclick="selectSuggestion('${brand.name}')">${brand.name}</div>`
+            )
+            .join("");
+          suggestionsContainer.style.display = "block";
+        } else {
+          suggestionsContainer.style.display = "none";
+        }
+      }
+
+      function hideSearchSuggestions() {
+        const suggestionsContainer =
+          document.getElementById("searchSuggestions");
+        if (suggestionsContainer) {
+          suggestionsContainer.style.display = "none";
+        }
+      }
+
+      function selectSuggestion(brandName) {
+        const searchInput = document.getElementById("brandSearch");
+        if (searchInput) {
+          searchInput.value = brandName;
+          hideSearchSuggestions();
+          renderButtons();
+        }
+      }
+
+      function filterBrands(brands) {
+        return brands.filter((brand) => {
+          switch (currentFilter) {
+            case "active":
+              return (
+                brand.promotion?.length > 0 &&
+                brand.calendar &&
+                Object.keys(brand.calendar).length > 0
+              );
+            case "promotion":
+              return brand.promotion?.length > 0;
+            case "calendar":
+              return brand.calendar && Object.keys(brand.calendar).length > 0;
+            default:
+              return true;
+          }
+        });
+      }
+
+      function updateBrandsCount(count) {
+        const countElement = document.getElementById("brandsCount");
+        if (countElement) {
+          countElement.textContent = `${count} thương hiệu`;
+        }
+      }
+
+      window.renderButtons = function () {
+        const query = norm(document.getElementById("brandSearch")?.value || "");
+        const wrap = document.getElementById("brandButtons");
+        let filteredBrands = Object.values(brandsData).filter((b) =>
+          norm(b.name).includes(query)
+        );
+
+        // Apply current filter
+        filteredBrands = filterBrands(filteredBrands);
+
+        // Update brands count
+        updateBrandsCount(filteredBrands.length);
+
+        if (Object.keys(brandsData).length === 0) {
+          renderStatus(
+            "brandButtons",
+            "empty",
+            "Chưa có dữ liệu. Vui lòng đợi Admin đăng tải."
+          );
+          return;
+        }
+
+        if (filteredBrands.length === 0) {
+          renderStatus(
+            "brandButtons",
+            "empty",
+            "Không tìm thấy nhãn hàng phù hợp."
+          );
+          return;
+        }
+
+        wrap.innerHTML = ""; // Clear status message
+        filteredBrands.forEach((b) => {
+          const btn = document.createElement("button");
+          btn.className = "brand-btn";
+          btn.style.background = b.bg || "var(--primary-bg)";
+
+          // Add brand indicators
+          let indicators = "";
+          if (b.promotion?.length > 0) {
+            indicators += '<span class="brand-indicator promotion">🏷️</span>';
+          }
+          if (b.calendar?.length > 0) {
+            indicators += '<span class="brand-indicator calendar">📅</span>';
+          }
+
+          btn.innerHTML = `${
+            b.logo ? `<img src="${b.logo}" alt="${b.name} logo">` : ""
+          }<div>${b.name}</div>${indicators}`;
+          btn.onclick = () => showDetail(b.key);
+          wrap.appendChild(btn);
+        });
+      };
+
+      // Hàm riêng để gán event listeners cho calendar
+      function attachCalendarEventListeners() {
+        const container = document.getElementById("calendarContainer");
+        const tooltipEl = document.getElementById("customTooltip");
+        if (!container || !tooltipEl) return;
+
+        container.querySelectorAll(".day[data-tooltip]").forEach((dayEl) => {
+          // Detect if device supports hover (desktop)
+          const supportsHover = window.matchMedia("(hover: hover)").matches;
+
+          // Only add hover events on desktop devices
+          if (supportsHover) {
+            dayEl.onmouseenter = (e) => {
+              const tooltips = JSON.parse(
+                e.target.getAttribute("data-tooltip")
+              );
+              console.log("Tooltip data:", tooltips);
+              let tooltipContent = "";
+              [...new Set(tooltips.map((t) => JSON.stringify(t)))]
+                .map((t) => JSON.parse(t))
+                .forEach((t) => {
+                  console.log("Processing tooltip item:", t);
+                  tooltipContent += `<h4>${t.title || "Sự kiện"}</h4><p>${(
+                    t.description || ""
+                  )
+                    .replace(/\n/g, "<br>")
+                    .replace(/\r\n/g, "<br>")}</p>${
+                    t.link
+                      ? `<p><a href="${t.link}" target="_blank" rel="noopener">Chi tiết...</a></p>`
+                      : ""
+                  }<hr style="border-color: #2a2f52; margin: 4px 0;">`;
+                });
+              console.log("Final tooltip content:", tooltipContent);
+              // Remove last <hr> tag properly
+              const cleanContent = tooltipContent.replace(/<hr[^>]*>$/g, "");
+              tooltipEl.innerHTML = cleanContent;
+              tooltipEl.style.display = "block";
+            };
+            dayEl.onmousemove = (e) => {
+              tooltipEl.style.left = e.clientX + 15 + "px";
+              tooltipEl.style.top = e.clientY + 15 + "px";
+            };
+            dayEl.onmouseleave = () => (tooltipEl.style.display = "none");
+          }
+
+          // Click/Touch events cho tất cả devices
+          const handleClick = (e) => {
+            console.log("Calendar day clicked/touched:", e.type, e.target);
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Luôn ẩn tooltip trước (đặc biệt quan trọng cho mobile)
+            tooltipEl.style.display = "none";
+
+            const tooltipAttr = e.target.getAttribute("data-tooltip");
+            console.log("Tooltip attribute:", tooltipAttr);
+
+            if (tooltipAttr) {
+              try {
+                const tooltips = JSON.parse(tooltipAttr);
+                console.log("Parsed tooltips:", tooltips);
+
+                if (tooltips && tooltips.length > 0) {
+                  // Delay một chút để đảm bảo tooltip đã ẩn hoàn toàn
+                  setTimeout(() => {
+                    showCalendarEventDetails(tooltips);
+                  }, 50);
+                } else {
+                  console.warn("No tooltips found or empty array");
+                }
+              } catch (error) {
+                console.error("Error parsing tooltip data:", error);
+              }
+            } else {
+              console.warn("No data-tooltip attribute found");
+            }
+          };
+
+          // Detect if this is a mobile device
+          const isMobile = !window.matchMedia("(hover: hover)").matches;
+
+          if (isMobile) {
+            // Mobile: Use touchstart for immediate response
+            dayEl.addEventListener(
+              "touchstart",
+              (e) => {
+                console.log(
+                  "Touch started on calendar day - will handle click"
+                );
+                e.preventDefault();
+                dayEl.style.transform = "scale(0.95)";
+
+                // Handle the click immediately on touchstart for mobile
+                handleClick(e);
+              },
+              { passive: false }
+            );
+          } else {
+            // Desktop: Use click event
+            dayEl.addEventListener("click", handleClick, { passive: false });
+          }
+
+          // Thêm visual feedback
+          dayEl.style.cursor = "pointer";
+          dayEl.style.userSelect = "none";
+          dayEl.style.webkitUserSelect = "none";
+          dayEl.style.webkitTouchCallout = "none";
+          dayEl.style.webkitTapHighlightColor = "rgba(59, 130, 246, 0.3)";
+
+          // Thêm class cho mobile styling
+          dayEl.classList.add("calendar-day-clickable");
+
+          // Thêm data attribute để debug
+          dayEl.setAttribute("data-clickable", "true");
+        });
+      }
+
+      // Hệ thống màu thông minh cho calendar (bỏ độ ưu tiên)
+      function generateSmartColors(brandKey, month, eventCount) {
+        // Tạo màu base dựa trên brand key (hash)
+        const brandHash = brandKey.split("").reduce((a, b) => {
+          a = (a << 5) - a + b.charCodeAt(0);
+          return a & a;
+        }, 0);
+
+        // Tạo màu dựa trên tháng (0-11)
+        const monthHue = (month * 30) % 360;
+
+        // Tạo màu dựa trên số lượng sự kiện
+        const intensityMultiplier = Math.min(eventCount / 3, 1.5); // Tối đa 1.5x intensity
+
+        // Base color từ brand hash
+        const baseHue = Math.abs(brandHash) % 360;
+
+        // Kết hợp hue từ brand và month
+        const finalHue = (baseHue + monthHue * 0.3) % 360;
+
+        return {
+          primary: `hsl(${finalHue}, 70%, 50%)`,
+          light: `hsl(${finalHue}, 60%, 60%)`,
+          dark: `hsl(${finalHue}, 80%, 40%)`,
+          gradient: `linear-gradient(135deg, hsl(${finalHue}, 70%, 50%), hsl(${finalHue}, 60%, 60%))`,
+          intensity: intensityMultiplier,
+        };
+      }
+
+      function buildCalendar(brandKey, campaignTitleFilter, year, month) {
+        const container = document.getElementById("calendarContainer");
+        if (!container) return;
+        const events = brandsData[brandKey]?.calendar || {};
+        const filteredEvents = Object.keys(events)
+          .filter((eventKey) => {
+            const event = events[eventKey];
+            return !campaignTitleFilter || event.title === campaignTitleFilter;
+          })
+          .map((eventKey) => ({ eventKey, ...events[eventKey] }));
+
+        const dayProps = {};
+        filteredEvents.forEach((event) => {
+          // Xử lý cả timestamp và string date
+          let startDate, endDate;
+
+          if (
+            event.startDate &&
+            typeof event.startDate === "object" &&
+            event.startDate.seconds
+          ) {
+            // Firebase timestamp format
+            startDate = new Date(event.startDate.seconds * 1000);
+          } else if (
+            event.startDate &&
+            typeof event.startDate === "object" &&
+            event.startDate._seconds
+          ) {
+            // Alternative Firebase timestamp format
+            startDate = new Date(event.startDate._seconds * 1000);
+          } else {
+            // String date format
+            startDate = new Date(event.startDate);
+          }
+
+          if (
+            event.endDate &&
+            typeof event.endDate === "object" &&
+            event.endDate.seconds
+          ) {
+            // Firebase timestamp format
+            endDate = new Date(event.endDate.seconds * 1000);
+          } else if (
+            event.endDate &&
+            typeof event.endDate === "object" &&
+            event.endDate._seconds
+          ) {
+            // Alternative Firebase timestamp format
+            endDate = new Date(event.endDate._seconds * 1000);
+          } else {
+            // String date format
+            endDate = new Date(event.endDate);
+          }
+
+          if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+            return;
+          }
+
+          startDate.setHours(0, 0, 0, 0);
+          endDate.setHours(0, 0, 0, 0);
+
+          // Tô màu tất cả các ngày từ startDate đến endDate
+          const currentDate = new Date(startDate);
+          while (currentDate <= endDate) {
+            if (
+              currentDate.getFullYear() === year &&
+              currentDate.getMonth() === month
+            ) {
+              const dayOfMonth = currentDate.getDate();
+              dayProps[dayOfMonth] ??= { classes: new Set(), tooltips: [] };
+              dayProps[dayOfMonth].classes.add("campaign-active");
+              dayProps[dayOfMonth].tooltips.push(event);
+            }
+            currentDate.setDate(currentDate.getDate() + 1);
+          }
+        });
+
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        let firstDayOfMonth = new Date(year, month, 1).getDay();
+        firstDayOfMonth = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+
+        let html = "<div class='calendar'>";
+        ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].forEach(
+          (d) => (html += `<div class='dow'>${d}</div>`)
+        );
+        html += "<div></div>".repeat(firstDayOfMonth);
+
+        for (let d = 1; d <= daysInMonth; d++) {
+          const props = dayProps[d];
+          let classes = "day";
+          let tooltipData = "";
+          let customStyle = "";
+
+          if (props) {
+            const eventCount = props.tooltips.length;
+            const colors = generateSmartColors(brandKey, month, eventCount);
+
+            // Thêm class dựa trên số lượng sự kiện
+            if (eventCount === 1) {
+              classes += " campaign-single";
+            } else if (eventCount === 2) {
+              classes += " campaign-double";
+            } else if (eventCount >= 3) {
+              classes += " campaign-multiple";
+            }
+
+            // Tạo style động dựa trên màu và số lượng sự kiện
+            if (eventCount === 1) {
+              customStyle = `background: ${colors.primary}; color: white; box-shadow: 0 2px 8px ${colors.primary}40;`;
+            } else if (eventCount === 2) {
+              customStyle = `background: ${colors.gradient}; color: white; box-shadow: 0 3px 12px ${colors.primary}50; transform: scale(1.05);`;
+            } else if (eventCount >= 3) {
+              customStyle = `background: ${colors.gradient}; color: white; box-shadow: 0 4px 16px ${colors.primary}60; transform: scale(1.1); animation: pulse-glow 2s infinite;`;
+            }
+
+            // Thêm indicator cho ngày có nhiều sự kiện
+            const eventIndicator =
+              eventCount > 1
+                ? `<div class="event-count-badge">${eventCount}</div>`
+                : "";
+
+            tooltipData = `data-tooltip='${JSON.stringify(props.tooltips)}'`;
+            html += `<div class='${classes}' ${tooltipData} style='${customStyle}'>${d}${eventIndicator}</div>`;
+          } else {
+            html += `<div class='${classes}'>${d}</div>`;
+          }
+        }
+        html += "</div>";
+        container.innerHTML = html;
+
+        // Gán lại event listeners sau khi re-render
+        attachCalendarEventListeners();
+      }
+
+      function renderCalendarUI(brandKey) {
+        const wrapper = document.getElementById("calendarWrapper");
+        if (!wrapper) return;
+
+        const b = brandsData[brandKey];
+        const campaigns = [
+          ...new Set(Object.values(b.calendar || {}).map((e) => e.title)),
+        ];
+
+        wrapper.innerHTML = `
+                <div class="calendar-header-improved">
+                    <div class="calendar-nav-left">
+                        <button id="prevMonth" class="nav-btn prev-btn" title="Tháng trước">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="15,18 9,12 15,6"></polyline>
+                            </svg>
+                        </button>
+                        <h4 id="monthYear" class="month-year-title"></h4>
+                        <button id="nextMonth" class="nav-btn next-btn" title="Tháng tiếp theo">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9,18 15,12 9,6"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="calendar-controls-right">
+                        <label class="filter-label">Lọc theo:</label>
+                        <select id="campaignFilter" class="campaign-filter">
+                            <option value="">📅 Tất cả Campaign</option>
+                            ${campaigns
+                              .map(
+                                (c) => `<option value="${c}">🎆 ${c}</option>`
+                              )
+                              .join("")}
+                        </select>
+                    </div>
+                </div>
+                <div id="calendarContainer"></div>
+                <div class="calendar-legend">
+                    <div class="legend-item">
+                        <div class="legend-color legend-single"></div>
+                        <span class="text-slate-300">1 sự kiện</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-double"></div>
+                        <span class="text-slate-300">2 sự kiện</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-multiple"></div>
+                        <span class="text-slate-300">3+ sự kiện</span>
+                    </div>
+                    <div class="legend-item ml-auto">
+                        <span class="text-slate-400 text-xs">💡 Màu thay đổi theo brand & tháng</span>
+                    </div>
+                </div>`;
+
+        const updateAndRender = () => {
+          const year = currentCalendarDate.getFullYear();
+          const month = currentCalendarDate.getMonth();
+          document.getElementById("monthYear").textContent = `Tháng ${
+            month + 1
+          }, ${year}`;
+          const campaignFilter =
+            document.getElementById("campaignFilter").value;
+          buildCalendar(brandKey, campaignFilter, year, month);
+        };
+
+        document.getElementById("prevMonth").onclick = () => {
+          currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+          updateAndRender();
+        };
+        document.getElementById("nextMonth").onclick = () => {
+          currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+          updateAndRender();
+        };
+
+        document.getElementById("campaignFilter").onchange = () => {
+          const selectedCampaign =
+            document.getElementById("campaignFilter").value;
+          if (selectedCampaign) {
+            const allEvents = brandsData[brandKey].calendar;
+            const eventsForCampaign = Object.keys(allEvents).filter(
+              (eventKey) => allEvents[eventKey].title === selectedCampaign
+            );
+
+            if (eventsForCampaign.length > 0) {
+              // Sử dụng startDate của event đầu tiên để điều hướng calendar
+              const firstEvent = allEvents[eventsForCampaign[0]];
+              let startDate;
+
+              if (
+                firstEvent.startDate &&
+                typeof firstEvent.startDate === "object" &&
+                firstEvent.startDate.seconds
+              ) {
+                startDate = new Date(firstEvent.startDate.seconds * 1000);
+              } else if (
+                firstEvent.startDate &&
+                typeof firstEvent.startDate === "object" &&
+                firstEvent.startDate._seconds
+              ) {
+                startDate = new Date(firstEvent.startDate._seconds * 1000);
+              } else {
+                startDate = new Date(firstEvent.startDate);
+              }
+
+              currentCalendarDate = startDate;
+            }
+          }
+          updateAndRender();
+        };
+        updateAndRender();
+      }
+
+      function renderPromotionTable(b) {
+        let page = 1,
+          per = 20;
+        let filtered = [...(b.promotion || [])];
+        const uniqueTypes = [
+          ...new Set(b.promotion.map((p) => p.type).filter(Boolean)),
+        ].sort();
+        const uniquePlatforms = [
+          ...new Set(b.promotion.map((p) => p.platform).filter(Boolean)),
+        ].sort();
+        const uniquePeriods = [
+          ...new Set(b.promotion.map((p) => p.period).filter(Boolean)),
+        ].sort();
+
+        const render = () => {
+          const totalPages = Math.max(1, Math.ceil(filtered.length / per));
+          const currentPage = Math.min(Math.max(page, 1), totalPages);
+          const start = (currentPage - 1) * per;
+          const slice = filtered.slice(start, start + per);
+
+          const filterBarHTML = `
+                <div class="filter-bar">
+                    <input id="filterName" placeholder="🔍 Tên sản phẩm/SKU..." oninput="window.__applyPromoFilters()" />
+                    <select id="filterType" onchange="window.__applyPromoFilters()">
+                        <option value="">-- Tất cả Loại --</option>
+                        ${uniqueTypes
+                          .map((t) => `<option value="${t}">${t}</option>`)
+                          .join("")}
+                    </select>
+                    <select id="filterPlatform" onchange="window.__applyPromoFilters()">
+                        <option value="">-- Tất cả Kênh --</option>
+                        ${uniquePlatforms
+                          .map((p) => `<option value="${p}">${p}</option>`)
+                          .join("")}
+                    </select>
+                    <select id="filterPeriod" onchange="window.__applyPromoFilters()">
+                        <option value="">-- Tất cả Cụm ngày --</option>
+                        ${uniquePeriods
+                          .map((p) => `<option value="${p}">${p}</option>`)
+                          .join("")}
+                    </select>
+                    <button class="btn" onclick="window.__clearPromoFilters()">Xóa lọc</button>
+                </div>`;
+
+          if (filtered.length === 0) {
+            return `${filterBarHTML}<div class="status-wrapper"><p>Không có sản phẩm nào khớp với bộ lọc.</p></div>`;
+          }
+
+          return `${filterBarHTML}
+                    <div class="pagination">
+                        <div>Tổng: ${
+                          filtered.length
+                        } dòng • Trang ${currentPage}/${totalPages}</div>
+                        <div>
+                            <button class="btn" id="btnPrev" onclick="window.__prev()">«</button>
+                            <button class="btn" id="btnNext" onclick="window.__next()">»</button>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <colgroup>
+                                <col style="width:8%"><col style="width:22%"><col style="width:9%"><col style="width:8%"><col style="width:9%"><col style="width:10%"><col style="width:10%"><col style="width:8%"><col style="width:10%"><col style="width:6%">
+                            </colgroup>
+                            <thead><tr><th>Loại</th><th>Sản phẩm</th><th>Platform</th><th>Giá gốc</th><th>Giá bán</th><th>Quà</th><th> Giá Voucher</th><th>Cụm ngày</th><th>Thông tin SP</th><th>Link</th></tr></thead>
+                            <tbody>${slice
+                              .map(
+                                (x) => `
+                                <tr>
+                                    <td>${x.type || ""}</td><td>${
+                                  x.name || ""
+                                }</td><td>${x.platform || ""}</td>
+                                    <td class="num">${
+                                      isFinite(Number(x.original))
+                                        ? currency(x.original)
+                                        : ""
+                                    }</td>
+                                    <td class="num">${
+                                      isFinite(Number(x.sale))
+                                        ? `<b>${currency(x.sale)}</b>`
+                                        : ""
+                                    }</td>
+                                    <td>${(x.gift || "")
+                                      .replace(/\n/g, "<br>")
+                                      .replace(
+                                        /\r\n/g,
+                                        "<br>"
+                                      )}</td><td class="text-blue-400 font-bold">${formatVoucher(
+                                  x.voucher
+                                )}</td><td>${x.period || ""}</td><td>${
+                                  x.extra
+                                    ? `<button class="product-info-btn" data-product-name="${(
+                                        x.name || ""
+                                      ).replace(
+                                        /"/g,
+                                        "&quot;"
+                                      )}" data-product-info="${(x.extra || "")
+                                        .replace(/\n/g, "<br>")
+                                        .replace(/\r\n/g, "<br>")
+                                        .replace(
+                                          /"/g,
+                                          "&quot;"
+                                        )}">Chi tiết</button>`
+                                    : ""
+                                }</td>
+                                    <td>${
+                                      x.link
+                                        ? `<a href="${x.link}" target="_blank" rel="noopener">Mở</a>`
+                                        : ""
+                                    }</td>
+                                </tr>`
+                              )
+                              .join("")}
+                            </tbody>
+                        </table>
+                    </div>`;
+        };
+
+        const updatePaginationButtons = () => {
+          const totalPages = Math.ceil(filtered.length / per);
+          document.getElementById("btnPrev").disabled = page <= 1;
+          document.getElementById("btnNext").disabled = page >= totalPages;
+        };
+
+        const reRender = () => {
+          document.getElementById("promoBox").innerHTML = render();
+          if (filtered.length > 0) {
+            updatePaginationButtons();
+          }
+        };
+
+        window.__prev = () => {
+          if (page > 1) {
+            page--;
+            reRender();
+          }
+        };
+        window.__next = () => {
+          if (page < Math.ceil(filtered.length / per)) {
+            page++;
+            reRender();
+          }
+        };
+
+        window.__applyPromoFilters = () => {
+          const nameVal = document.getElementById("filterName").value;
+          const nameQuery = norm(nameVal);
+          const typeQuery = document.getElementById("filterType").value;
+          const platformQuery = document.getElementById("filterPlatform").value;
+          const periodQuery = document.getElementById("filterPeriod").value;
+
+          filtered = b.promotion.filter((p) => {
+            const matchName =
+              !nameQuery || norm(p.name || "").includes(nameQuery);
+            const matchType = !typeQuery || p.type === typeQuery;
+            const matchPlatform =
+              !platformQuery || p.platform === platformQuery;
+            const matchPeriod = !periodQuery || p.period === periodQuery;
+            return matchName && matchType && matchPlatform && matchPeriod;
+          });
+
+          page = 1;
+          reRender();
+
+          // Restore filter values after re-render
+          const nameInput = document.getElementById("filterName");
+          nameInput.value = nameVal;
+          nameInput.focus();
+          nameInput.selectionStart = nameInput.selectionEnd =
+            nameInput.value.length;
+          document.getElementById("filterType").value = typeQuery;
+          document.getElementById("filterPlatform").value = platformQuery;
+          document.getElementById("filterPeriod").value = periodQuery;
+        };
+
+        window.__clearPromoFilters = () => {
+          const filtersWereActive =
+            document.getElementById("filterName").value ||
+            document.getElementById("filterType").value ||
+            document.getElementById("filterPlatform").value ||
+            document.getElementById("filterPeriod").value;
+          if (filtersWereActive) {
+            document.getElementById("filterName").value = "";
+            document.getElementById("filterType").value = "";
+            document.getElementById("filterPlatform").value = "";
+            document.getElementById("filterPeriod").value = "";
+            window.__applyPromoFilters();
+          }
+        };
+        return `<div id="promoBox">${render()}</div>`;
+      }
+
+      function showDetail(key) {
+        currentBrandKey = key;
+        currentCalendarDate = new Date();
+        const b = brandsData[key];
+        if (!b) return;
+        const panel = document.getElementById("brandDetail");
+        let html = `<h2>${b.name}</h2>`;
+
+        if (b.calendar && Object.keys(b.calendar).length) {
+          html += `<h3>📅 Lịch Sự Kiện</h3><div id="calendarWrapper"></div>`;
+        }
+        if (b.promotion?.length) {
+          html += `<h3 style="margin-top: 20px;">🏷️ Khuyến Mãi</h3>${renderPromotionTable(
+            b
+          )}`;
+        }
+        if (b.top?.length) {
+          html += `<div class="top-sku-section">
+                    <h3>Top SKU bán chạy</h3>
+                    <div class="top-sku-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Ảnh</th>
+                                    <th>Số lượng bán</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${b.top
+                                  .map(
+                                    (t) => `<tr>
+                                    <td class="sku-name">${t.sku || ""}</td>
+                                    <td>${
+                                      t.image
+                                        ? `<img src="${t.image}" class="sku-image" alt="${t.sku}">`
+                                        : `<div class="sku-image" style="background: var(--secondary-bg); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 10px;">No Img</div>`
+                                    }</td>
+                                    <td class="sku-qty">${Number(
+                                      t.qty || 0
+                                    ).toLocaleString("vi-VN")}</td>
+                                </tr>`
+                                  )
+                                  .join("")}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>`;
+        }
+        panel.innerHTML = html;
+
+        if (b.calendar && Object.keys(b.calendar).length) {
+          renderCalendarUI(key);
+        }
+
+        // Cập nhật trạng thái nút phân trang sau khi render xong bảng khuyến mãi
+        if (b.promotion?.length) {
+          document.querySelector("#promoBox").innerHTML =
+            renderPromotionTable(b);
+        }
+      }
+
+      const dataRef = doc(db, "landingPage", "data");
+      onSnapshot(
+        dataRef,
+        (doc) => {
+          console.log("Dữ liệu mới đã được cập nhật!");
+          if (doc.exists()) {
+            const data = doc.data();
+            if (data.header) {
+              // Header data is no longer used in public version
+            }
+            brandsData = data.brands || {};
+            renderButtons();
+            if (currentBrandKey && brandsData[currentBrandKey]) {
+              showDetail(currentBrandKey);
+            } else {
+              renderStatus(
+                "brandDetail",
+                "empty",
+                "Chọn một nhãn hàng để xem chi tiết."
+              );
+            }
+          } else {
+            console.log("Chưa có dữ liệu!");
+            renderStatus(
+              "brandButtons",
+              "empty",
+              "Chưa có dữ liệu. Vui lòng đợi Admin đăng tải lần đầu."
+            );
+          }
+        },
+        (error) => {
+          console.error("Lỗi khi lắng nghe dữ liệu:", error);
+          renderStatus(
+            "brandButtons",
+            "error",
+            "Không thể kết nối tới máy chủ. Vui lòng kiểm tra lại."
+          );
+        }
+      );
+
+      document.querySelectorAll(".faq-question").forEach((item) => {
+        item.addEventListener("click", () => {
+          const faqItem = item.parentElement;
+          faqItem.classList.toggle("active");
+          const answer = faqItem.querySelector(".faq-answer");
+          if (faqItem.classList.contains("active")) {
+            answer.style.maxHeight = answer.scrollHeight + "px";
+          } else {
+            answer.style.maxHeight = "0";
+          }
+        });
+      });
+
+      // Enhanced scroll animations
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+              const element = entry.target;
+
+              // Add staggered animation based on element type
+              if (element.classList.contains("brand-btn")) {
+                element.style.animation = `bounceIn 0.6s ease-out ${
+                  index * 0.1
+                }s both`;
+              } else if (element.classList.contains("feature-item")) {
+                element.style.animation = `fadeInUp 0.6s ease-out ${
+                  index * 0.2
+                }s both`;
+              } else if (element.classList.contains("filter-chip")) {
+                element.style.animation = `scaleIn 0.4s ease-out ${
+                  index * 0.1
+                }s both`;
+              } else {
+                element.style.animation = "fadeInUp 0.8s ease-out forwards";
+              }
+
+              observer.unobserve(element);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      // Observe sections for initial load
+      document.querySelectorAll("section").forEach((section) => {
+        section.style.opacity = "0";
+        observer.observe(section);
+      });
+
+      // Add micro-interactions to buttons
+      document.addEventListener("DOMContentLoaded", function () {
+        // Add click animations to buttons
+        document.addEventListener("click", function (e) {
+          if (e.target.matches(".brand-btn, .cta-button, .filter-chip, .btn")) {
+            e.target.style.animation = "scaleIn 0.2s ease-out";
+            setTimeout(() => {
+              e.target.style.animation = "";
+            }, 200);
+          }
+        });
+
+        // Add hover sound effect simulation (visual feedback)
+        document.addEventListener(
+          "mouseenter",
+          function (e) {
+            if (
+              e.target &&
+              e.target.matches &&
+              e.target.matches(".brand-btn, .cta-button, .filter-chip")
+            ) {
+              e.target.style.transform = "translateY(-2px) scale(1.02)";
+            }
+          },
+          true
+        );
+
+        document.addEventListener(
+          "mouseleave",
+          function (e) {
+            if (
+              e.target &&
+              e.target.matches &&
+              e.target.matches(".brand-btn, .cta-button, .filter-chip")
+            ) {
+              e.target.style.transform = "";
+            }
+          },
+          true
+        );
+      });
+    </script>
+  </body>
+</html>

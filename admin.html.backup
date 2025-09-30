@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <title>Admin Dashboard – Google Sheet v2.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="admin-styles.css" />
+    <style>
+      /* Additional admin-specific styles if needed */
+    </style>
+  </head>
+  <body class="antiasaed">
+    <!-- Mobile Menu Toggle -->
+    <button
+      id="mobileMenuToggle"
+      class="fixed top-4 left-4 z-50 lg:hidden bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-lg shadow-lg border border-slate-600"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <line x1="3" y1="6" x2="21" y2="6" />
+        <line x1="3" y1="12" x2="21" y2="12" />
+        <line x1="3" y1="18" x2="21" y2="18" />
+      </svg>
+    </button>
+
+    <!-- Mobile Overlay -->
+    <div
+      id="mobileOverlay"
+      class="fixed inset-0 bg-black/50 z-40 lg:hidden hidden"
+    ></div>
+
+    <!-- Login Form -->
+    <div
+      id="loginContainer"
+      class="hidden fixed inset-0 bg-slate-900 flex items-center justify-center z-50"
+    >
+      <div
+        class="bg-slate-800 rounded-xl p-8 w-full max-w-md mx-4 shadow-2xl border border-slate-700"
+      >
+        <div class="text-center mb-8">
+          <h1 class="text-3xl font-bold text-white mb-2">🔐 Admin Login</h1>
+          <p class="text-slate-400">Đăng nhập để truy cập Admin Dashboard</p>
+        </div>
+
+        <!-- Removed register tab - admin only login -->
+        <div class="mb-6">
+          <div
+            class="text-center py-2 px-4 text-sm font-medium text-indigo-400 bg-slate-700/50 rounded-lg border border-slate-600"
+          >
+            Admin Login Only
+          </div>
+        </div>
+
+        <form id="authForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-1"
+              >Email</label
+            >
+            <input
+              type="email"
+              id="authEmail"
+              required
+              class="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-white placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              placeholder="admin@example.com"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-1"
+              >Mật khẩu</label
+            >
+            <input
+              type="password"
+              id="authPassword"
+              required
+              class="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-white placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              placeholder="••••••••"
+            />
+          </div>
+
+          <!-- Removed confirm password field - no registration allowed -->
+
+          <div
+            id="authError"
+            class="hidden bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-red-400 text-sm"
+          ></div>
+
+          <button
+            type="submit"
+            id="authSubmit"
+            class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+          >
+            <span id="authSubmitText">Đăng nhập</span>
+            <div
+              id="authSpinner"
+              class="hidden w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
+            ></div>
+          </button>
+        </form>
+
+        <div class="mt-6 text-center text-sm text-slate-400">
+          <p>⚠️ Chỉ admin được ủy quyền mới có thể truy cập</p>
+          <p class="text-xs mt-1">Liên hệ admin để được cấp tài khoản</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Layout Container -->
+    <div id="mainApp" class="flex h-screen bg-slate-900 text-slate-200">
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="w-64 flex-shrink-0 bg-slate-950/70 backdrop-blur-sm border-r border-slate-800 flex flex-col fixed lg:relative h-full z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out"
+      >
+        <!-- Sidebar Header -->
+        <div
+          class="h-16 flex items-center justify-between px-4 border-b border-slate-800"
+        >
+          <h1 class="text-xl font-bold text-white tracking-wider">
+            🚀 Admin Page VIP
+          </h1>
+          <button
+            id="closeSidebar"
+            class="lg:hidden text-slate-400 hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <!-- Main Actions -->
+        <div class="p-4 space-y-2 border-b border-slate-800">
+          <div
+            class="w-full flex items-center justify-center gap-2 text-green-400 font-semibold py-2 px-4 rounded-lg bg-green-500/10 text-sm"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="animate-pulse"
+            >
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+            <span>Live Preview Mode</span>
+          </div>
+          <button
+            id="publishBtn"
+            class="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"
+              />
+              <path d="M12 12v9" />
+              <path d="m16 16-4-4-4 4" />
+            </svg>
+            <span>Xuất Bản </span>
+          </button>
+
+          <!-- Quick Publish with Note -->
+          <button
+            id="publishWithNoteBtn"
+            class="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-500 text-white font-medium py-1.5 px-3 rounded-lg transition-all duration-200 text-sm"
+            title="Xuất bản với ghi chú tùy chỉnh"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 20h9" />
+              <path
+                d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+              />
+            </svg>
+            <span>Xuất Bản + Ghi Chú</span>
+          </button>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="flex-1 overflow-y-auto p-4">
+          <!-- Dashboard Link -->
+          <div class="mb-4">
+            <a
+              href="#"
+              id="dashboardLink"
+              class="nav-item flex items-center p-3 rounded-lg transition-colors duration-200 bg-indigo-600 text-white"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="mr-3"
+              >
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+              </svg>
+              <span class="font-medium">Dashboard</span>
+            </a>
+          </div>
+
+          <!-- Versioning Link -->
+          <div class="mb-4">
+            <a
+              href="#"
+              id="versioningLink"
+              class="nav-item flex items-center p-3 rounded-lg transition-colors duration-200 text-slate-300 hover:bg-slate-800 hover:text-white"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="mr-3"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12,6 12,12 16,14" />
+              </svg>
+              <span class="font-medium">Versioning</span>
+            </a>
+          </div>
+
+          <!-- Brand List -->
+          <div class="space-y-2">
+            <h3
+              class="text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                />
+              </svg>
+              Brands
+            </h3>
+            <div id="brandList" class="space-y-2"></div>
+          </div>
+        </nav>
+        <!-- Sidebar Footer / Edit Mode Toggle -->
+        <div class="p-4 border-t border-slate-800 mt-auto">
+          <!-- User Info & Logout -->
+          <div id="userInfo" class="mb-4 p-3 bg-slate-800 rounded-lg">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm font-medium text-white" id="userEmail">
+                  admin@example.com
+                </div>
+                <div class="text-xs text-slate-400">Admin User</div>
+              </div>
+              <button
+                id="logoutBtn"
+                class="text-slate-400 hover:text-red-400 transition-colors"
+                title="Đăng xuất"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16,17 21,12 16,7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <label for="toggleEdit" class="flex items-center cursor-pointer">
+            <div class="relative">
+              <input type="checkbox" id="toggleEdit" class="sr-only" />
+              <div class="block bg-slate-700 w-14 h-8 rounded-full"></div>
+              <div
+                class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform"
+              ></div>
+            </div>
+            <div class="ml-3 text-slate-300 font-medium">Edit Mode</div>
+          </label>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main
+        id="mainContent"
+        class="flex-1 overflow-y-auto p-4 md:p-8 lg:ml-0 lg:mt-0 mt-16"
+      >
+        <!-- Mobile Header -->
+        <div class="lg:hidden mb-6">
+          <h2 class="text-2xl font-bold text-white">Admin Dashboard</h2>
+          <p class="text-slate-400 text-sm">Quản lý dữ liệu Brand Hub</p>
+        </div>
+        <!-- Dashboard Content -->
+        <div id="dashboardContent" class="space-y-6">
+          <!-- Dashboard Header -->
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="text-3xl font-bold text-white">Dashboard</h1>
+              <p class="text-slate-400 mt-1">
+                Tổng quan về hệ thống Affiliates Program
+              </p>
+            </div>
+            <div class="flex items-center gap-2 text-sm text-slate-400">
+              <div
+                class="w-2 h-2 bg-green-400 rounded-full live-indicator"
+              ></div>
+              <span>Live Data</span>
+            </div>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Total Brands -->
+            <div
+              class="dashboard-stats-card bg-slate-800/50 rounded-xl p-6 border border-slate-700"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-slate-400 text-sm font-medium">Total Brands</p>
+                  <p
+                    class="text-3xl font-bold text-white mt-2 stats-number"
+                    id="totalBrands"
+                  >
+                    0
+                  </p>
+                </div>
+                <div
+                  class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center dashboard-stats-icon"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-blue-400"
+                  >
+                    <path
+                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Last Publish -->
+            <div
+              class="dashboard-stats-card bg-slate-800/50 rounded-xl p-6 border border-slate-700"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-slate-400 text-sm font-medium">Last Publish</p>
+                  <p
+                    class="text-lg font-semibold text-white mt-2"
+                    id="lastPublish"
+                  >
+                    Chưa có
+                  </p>
+                  <p class="text-xs text-slate-500" id="lastPublishTime"></p>
+                </div>
+                <div
+                  class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center dashboard-stats-icon"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-green-400"
+                  >
+                    <path
+                      d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"
+                    />
+                    <path d="M12 12v9" />
+                    <path d="m16 16-4-4-4 4" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Today's Campaigns -->
+            <div
+              class="dashboard-stats-card bg-slate-800/50 rounded-xl p-6 border border-slate-700"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-slate-400 text-sm font-medium">
+                    Today's Campaigns
+                  </p>
+                  <p
+                    class="text-3xl font-bold text-white mt-2 stats-number"
+                    id="activeCampaigns"
+                  >
+                    0
+                  </p>
+                </div>
+                <div
+                  class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center dashboard-stats-icon"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-purple-400"
+                  >
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upcoming Campaigns (30 days) -->
+            <div
+              class="dashboard-stats-card bg-slate-800/50 rounded-xl p-6 border border-slate-700"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-slate-400 text-sm font-medium">
+                    Upcoming (30 days)
+                  </p>
+                  <p
+                    class="text-3xl font-bold text-white mt-2 stats-number"
+                    id="upcomingCampaigns"
+                  >
+                    0
+                  </p>
+                </div>
+                <div
+                  class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center dashboard-stats-icon"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-orange-400"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12,6 12,12 16,14" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
+                </svg>
+                Recent Activity
+              </h3>
+              <button
+                id="refreshActivity"
+                class="text-slate-400 hover:text-white transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+                  />
+                  <path d="M21 3v5h-5" />
+                  <path
+                    d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+                  />
+                  <path d="M3 21v-5h5" />
+                </svg>
+              </button>
+            </div>
+            <div id="recentActivityList" class="space-y-3">
+              <div class="text-center text-slate-400 py-8">
+                <div
+                  class="animate-spin w-6 h-6 border-2 border-slate-600 border-t-indigo-500 rounded-full mx-auto mb-2"
+                ></div>
+                <p>Đang tải hoạt động gần đây...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Versioning Content -->
+        <div id="versioningContent" class="hidden space-y-6">
+          <!-- Versioning Header -->
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="text-3xl font-bold text-white">Versioning</h1>
+              <p class="text-slate-400 mt-1">
+                Quản lý lịch sử phiên bản và khôi phục dữ liệu
+              </p>
+            </div>
+            <div class="flex items-center gap-2 text-sm text-slate-400">
+              <div
+                class="w-2 h-2 bg-green-400 rounded-full live-indicator"
+              ></div>
+              <span>Live Data</span>
+            </div>
+          </div>
+
+          <!-- Version Management Section -->
+          <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12,6 12,12 16,14" />
+                </svg>
+                Lịch Sử Phiên Bản
+              </h3>
+              <button
+                id="refreshVersions"
+                class="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors text-sm"
+                title="Làm mới danh sách phiên bản"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+                  />
+                  <path d="M21 3v5h-5" />
+                  <path
+                    d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+                  />
+                  <path d="M3 21v-5h5" />
+                </svg>
+                Làm mới
+              </button>
+            </div>
+            <div id="versionsList" class="space-y-3 max-h-96 overflow-y-auto">
+              <div class="text-center text-slate-400 py-8">
+                <div
+                  class="animate-spin w-6 h-6 border-2 border-slate-600 border-t-indigo-500 rounded-full mx-auto mb-2"
+                ></div>
+                <p>Đang tải lịch sử phiên bản...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Version Statistics -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+              <h3
+                class="text-lg font-bold text-white mb-4 flex items-center gap-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 3v18h18" />
+                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
+                </svg>
+                Thống Kê Phiên Bản
+              </h3>
+
+              <div class="space-y-4">
+                <!-- Version Activity Chart -->
+                <div class="bg-slate-700/50 rounded-lg p-4 stat-card">
+                  <h4 class="text-sm font-semibold text-slate-300 mb-3">
+                    Hoạt Động Gần Đây
+                  </h4>
+                  <div id="versionActivityChart" class="space-y-2">
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="text-slate-400">Tuần này:</span>
+                      <span
+                        class="text-white font-semibold stat-number"
+                        id="thisWeekVersions"
+                        >0</span
+                      >
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="text-slate-400">Tháng này:</span>
+                      <span
+                        class="text-white font-semibold stat-number"
+                        id="thisMonthVersions"
+                        >0</span
+                      >
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="text-slate-400">Tổng cộng:</span>
+                      <span
+                        class="text-white font-semibold stat-number"
+                        id="totalVersionsCount"
+                        >0</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Version Size Analysis -->
+                <div class="bg-slate-700/50 rounded-lg p-4 stat-card">
+                  <h4 class="text-sm font-semibold text-slate-300 mb-3">
+                    Phân Tích Kích Thước
+                  </h4>
+                  <div class="space-y-2">
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="text-slate-400">Kích thước TB:</span>
+                      <span
+                        class="text-white font-semibold stat-number"
+                        id="avgVersionSize"
+                        >0KB</span
+                      >
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="text-slate-400">Kích thước lớn nhất:</span>
+                      <span
+                        class="text-white font-semibold stat-number"
+                        id="maxVersionSize"
+                        >0KB</span
+                      >
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="text-slate-400">Kích thước nhỏ nhất:</span>
+                      <span
+                        class="text-white font-semibold stat-number"
+                        id="minVersionSize"
+                        >0KB</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-2 gap-3">
+                  <div
+                    class="bg-slate-700/50 rounded-lg p-3 text-center stat-card"
+                  >
+                    <div
+                      class="text-lg font-bold text-blue-400 stat-number"
+                      id="versionsWithNotes"
+                    >
+                      0
+                    </div>
+                    <div class="text-xs text-slate-400">Có ghi chú</div>
+                  </div>
+                  <div
+                    class="bg-slate-700/50 rounded-lg p-3 text-center stat-card"
+                  >
+                    <div
+                      class="text-lg font-bold text-green-400 stat-number"
+                      id="rollbackCount"
+                    >
+                      0
+                    </div>
+                    <div class="text-xs text-slate-400">Rollback</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Version Info -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
+              <h3
+                class="text-lg font-bold text-white mb-4 flex items-center gap-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  />
+                  <polyline points="14,2 14,8 20,8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                  <polyline points="10,9 9,9 8,9" />
+                </svg>
+                Thông Tin Phiên Bản
+              </h3>
+
+              <!-- Current Version Highlight -->
+              <div
+                id="currentVersionHighlight"
+                class="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg"
+              >
+                <div class="flex items-center gap-2 mb-2">
+                  <div
+                    class="w-2 h-2 bg-green-400 rounded-full animate-pulse"
+                  ></div>
+                  <span class="text-sm font-semibold text-green-400"
+                    >Phiên Bản Hiện Tại</span
+                  >
+                </div>
+                <div
+                  class="text-white font-bold text-lg"
+                  id="currentVersionDisplay"
+                >
+                  Chưa có
+                </div>
+                <div
+                  class="text-sm text-slate-400"
+                  id="currentVersionNote"
+                ></div>
+                <div
+                  class="text-xs text-slate-500 mt-1"
+                  id="currentVersionTime"
+                ></div>
+              </div>
+
+              <div class="space-y-3 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-slate-400">Tổng phiên bản:</span>
+                  <span class="text-white font-semibold" id="totalVersions"
+                    >0</span
+                  >
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-slate-400">Phiên bản hiện tại:</span>
+                  <span class="text-white font-semibold" id="currentVersion"
+                    >Chưa có</span
+                  >
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-slate-400">Cập nhật cuối:</span>
+                  <span class="text-white font-semibold" id="lastUpdate"
+                    >Chưa có</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Placeholder when no brand is selected -->
+        <div
+          id="welcomePlaceholder"
+          class="hidden flex flex-col items-center justify-center h-full text-center text-slate-500"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="80"
+            height="80"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="mb-4"
+          >
+            <path
+              d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+            />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <h2 class="text-2xl font-bold text-slate-300 mb-2">
+            Chào mừng đến với Admin Hub
+          </h2>
+          <p>Đang chờ dữ liệu real-time từ khu vực Preview...</p>
+        </div>
+        <!-- Content for selected brand will be injected here -->
+      </main>
+    </div>
+
+    <!-- Tooltip Element -->
+    <div
+      id="customTooltip"
+      class="hidden fixed bg-slate-900 border border-indigo-500 rounded-lg shadow-xl p-3 z-50 text-sm max-w-xs pointer-events-none text-slate-300"
+    ></div>
+
+    <!-- Product Info Popup -->
+    <div id="productInfoPopup" class="popup-overlay">
+      <div class="popup-content">
+        <div class="popup-header">
+          <h3 class="popup-title" id="popupTitle">Thông tin sản phẩm</h3>
+          <button class="popup-close" onclick="closeProductInfo()">
+            &times;
+          </button>
+        </div>
+        <div class="popup-body" id="popupBody">
+          <!-- Content will be inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div
+      id="loadingOverlay"
+      class="hidden fixed inset-0 bg-slate-900/80 z-50 items-center justify-center"
+    >
+      <div class="flex flex-col items-center">
+        <div
+          class="w-16 h-16 border-4 border-t-indigo-500 border-r-indigo-500 border-b-indigo-500 border-l-transparent rounded-full animate-spin"
+        ></div>
+        <p class="text-white text-lg font-semibold mt-4">Đang tải dữ liệu...</p>
+      </div>
+    </div>
+
+    <!-- Rollback Confirmation Modal -->
+    <div
+      id="rollbackModal"
+      class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-slate-800 rounded-xl shadow-2xl w-full max-w-lg border border-slate-700"
+      >
+        <div class="p-6 border-b border-slate-700">
+          <h3 class="text-xl font-bold text-white flex items-center gap-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-yellow-400"
+            >
+              <path
+                d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"
+              />
+              <path d="M12 9v4" />
+              <path d="m12 17 .01 0" />
+            </svg>
+            Xác Nhận Rollback
+          </h3>
+        </div>
+        <div class="p-6">
+          <div class="text-slate-300 mb-4">
+            <p class="mb-2">Bạn có chắc chắn muốn khôi phục về phiên bản:</p>
+            <div class="bg-slate-700 rounded-lg p-3 border border-slate-600">
+              <div class="font-semibold text-white" id="rollbackVersionInfo">
+                Phiên bản #1
+              </div>
+              <div class="text-sm text-slate-400" id="rollbackVersionDetails">
+                Tạo lúc: 19/09/2024 - 10:30
+              </div>
+            </div>
+          </div>
+          <div
+            class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 mb-4"
+          >
+            <p class="text-yellow-400 text-sm">
+              <strong>Lưu ý:</strong> Hành động này sẽ ghi đè lên dữ liệu hiện
+              tại và không thể hoàn tác.
+            </p>
+          </div>
+          <div class="flex justify-end gap-3">
+            <button
+              id="cancelRollback"
+              class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-semibold transition-colors"
+            >
+              Hủy
+            </button>
+            <button
+              id="confirmRollback"
+              class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-semibold transition-colors"
+            >
+              Xác Nhận Rollback
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Version Preview Modal -->
+    <div
+      id="versionPreviewModal"
+      class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-slate-800 rounded-xl shadow-2xl w-full max-w-4xl max-h-[80vh] border border-slate-700"
+      >
+        <div
+          class="p-6 border-b border-slate-700 flex justify-between items-center"
+        >
+          <h3 class="text-xl font-bold text-white flex items-center gap-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-blue-400"
+            >
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+            </svg>
+            Xem Trước Phiên Bản
+          </h3>
+          <button
+            id="closeVersionPreview"
+            class="text-slate-400 hover:text-white transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div class="p-6 overflow-y-auto max-h-[60vh]">
+          <div id="versionPreviewContent" class="text-slate-300">
+            <!-- Version content will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Publish with Note Modal -->
+    <div
+      id="publishNoteModal"
+      class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-slate-800 rounded-xl shadow-2xl w-full max-w-md border border-slate-700"
+      >
+        <div class="p-6 border-b border-slate-700">
+          <h3 class="text-xl font-bold text-white flex items-center gap-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-green-400"
+            >
+              <path d="M12 20h9" />
+              <path
+                d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+              />
+            </svg>
+            Xuất Bản Với Ghi Chú
+          </h3>
+        </div>
+        <div class="p-6">
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-slate-300 mb-2">
+              Ghi chú cho phiên bản này (tùy chọn):
+            </label>
+            <textarea
+              id="publishNoteInput"
+              class="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white placeholder-slate-400 focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
+              rows="3"
+              maxlength="100"
+              placeholder="VD: Cập nhật giá sản phẩm mới, Thêm brand ABC, Sửa lỗi hiển thị..."
+            ></textarea>
+            <div class="text-xs text-slate-400 mt-1">
+              <span id="noteCharCount">0</span>/100 ký tự
+            </div>
+          </div>
+
+          <div
+            class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3 mb-4"
+          >
+            <p class="text-blue-400 text-sm">
+              <strong>💡 Mẹo:</strong> Ghi chú sẽ giúp bạn dễ dàng nhận biết và
+              quản lý các phiên bản sau này.
+            </p>
+          </div>
+
+          <div class="flex justify-end gap-3">
+            <button
+              id="cancelPublishNote"
+              class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-semibold transition-colors"
+            >
+              Hủy
+            </button>
+            <button
+              id="confirmPublishNote"
+              class="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white font-semibold transition-colors"
+            >
+              Xuất Bản Ngay
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Notification Toast -->
+    <div
+      id="successToast"
+      class="fixed top-4 right-4 z-[60] transform translate-x-full transition-transform duration-300 ease-out opacity-0 pointer-events-none"
+    >
+      <div
+        class="bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl shadow-2xl p-4 min-w-[320px] border border-green-400/20"
+      >
+        <div class="flex items-start gap-3">
+          <div class="flex-shrink-0">
+            <div
+              class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"
+            >
+              <svg
+                id="toastIcon"
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-white"
+              >
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+            </div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 id="toastTitle" class="font-semibold text-white mb-1">
+              Xuất bản thành công!
+            </h4>
+            <p id="toastMessage" class="text-sm text-green-100 leading-relaxed">
+              Dữ liệu đã được cập nhật và lưu version mới.
+            </p>
+            <div
+              id="toastNote"
+              class="hidden mt-2 px-2 py-1 bg-white/10 rounded-md text-xs text-green-50 italic"
+            ></div>
+          </div>
+          <button
+            id="closeToast"
+            class="flex-shrink-0 text-white/80 hover:text-white transition-colors ml-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div class="mt-3 bg-white/10 rounded-lg h-1.5 overflow-hidden">
+          <div
+            id="toastProgress"
+            class="h-full bg-white/40 rounded-lg transition-all duration-75 ease-linear"
+            style="width: 100%"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Notification Toast -->
+    <div
+      id="errorToast"
+      class="fixed top-4 right-4 z-[60] transform translate-x-full transition-transform duration-300 ease-out opacity-0 pointer-events-none"
+    >
+      <div
+        class="bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-xl shadow-2xl p-4 min-w-[320px] border border-red-400/20"
+      >
+        <div class="flex items-start gap-3">
+          <div class="flex-shrink-0">
+            <div
+              class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-white"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-semibold text-white mb-1">Xuất bản thất bại!</h4>
+            <p id="errorMessage" class="text-sm text-red-100 leading-relaxed">
+              Có lỗi xảy ra khi xuất bản dữ liệu.
+            </p>
+          </div>
+          <button
+            id="closeErrorToast"
+            class="flex-shrink-0 text-white/80 hover:text-white transition-colors ml-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase Config should be in a separate file, but here for portability -->
+    <script src="firebase-config.js"></script>
+
+    <script type="module" src="admin-js/admin-main.js"></script>
+  </body>
+</html>
