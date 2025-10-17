@@ -1,29 +1,42 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  getDoc,
-  getDocs,
-  deleteDoc,
-  collection,
-  query,
-  orderBy,
-  limit,
-  onSnapshot,
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut,
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+// import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+// import {
+//   getFirestore,
+//   doc,
+//   setDoc,
+//   getDoc,
+//   getDocs,
+//   deleteDoc,
+//   collection,
+//   query,
+//   orderBy,
+//   limit,
+//   onSnapshot,
+// } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+// import {
+//   getAuth,
+//   signInWithEmailAndPassword,
+//   createUserWithEmailAndPassword,
+//   onAuthStateChanged,
+//   signOut,
+// } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-console.log("Firebase đã được kết nối!");
+// import pako from "https://esm.sh/pako@2.1.0";
+
+// const app = initializeApp(firebaseConfig);
+// const db = getFirestore(app);
+// const auth = getAuth(app);
+// console.log("Firebase đã được kết nối!");
+// --------------------------------------------------------------
+// admin-js/admin-main.js (phần đầu file)
+
+// KHỐI CODE MỚI - CHÍNH XÁC
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+console.log("Firebase đã được kết nối (sử dụng global compat scope)!");
+
+console.log("Firebase và Pako đã được kết nối (sử dụng global scope)!");
 
 // --- AUTHENTICATION STATE MANAGEMENT ---
 let isAuthenticated = false;
@@ -83,7 +96,7 @@ const handleAuth = async (e) => {
 
   try {
     // Only login - no registration allowed
-    await signInWithEmailAndPassword(auth, email, password);
+    await auth.signInWithEmailAndPassword(email, password);
     // Success will be handled by onAuthStateChanged
   } catch (error) {
     console.error("Auth error:", error);
@@ -131,7 +144,7 @@ const handleAuth = async (e) => {
 // Logout function
 const handleLogout = async () => {
   try {
-    await signOut(auth);
+    await auth.signOut();
   } catch (error) {
     console.error("Logout error:", error);
   }
@@ -153,7 +166,7 @@ authForm.addEventListener("submit", handleAuth);
 logoutBtn.addEventListener("click", handleLogout);
 
 // Auth state observer
-onAuthStateChanged(auth, (user) => {
+auth.onAuthStateChanged((user) => {
   if (user) {
     // User is signed in
     console.log("User logged in:", user.email);
@@ -305,12 +318,159 @@ function compressData(data) {
 }
 
 // Giải nén chuỗi Base64 về lại đối tượng JSON
-function decompressData(base64String) {
+function decompressData(base64OrJsonString) {
+  // CÁCH GIẢI NÉN GIỐNG TRANG PUBLIC (đơn giản, đáng tin cậy với dữ liệu đã nén bởi pako.deflate)
+  function simpleDecompressLikePublic(base64) {
+    try {
+      const bytes = atob(base64)
+        .split("")
+        .map((c) => c.charCodeAt(0));
+      const jsonString = pako.inflate(new Uint8Array(bytes), { to: "string" });
+      return JSON.parse(jsonString);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Chuẩn hóa base64 (hỗ trợ URL-safe và padding)
+  function normalizeBase64(input) {
+    let str = input.replace(/-/g, "+").replace(/_/g, "/");
+    const pad = str.length % 4;
+    if (pad === 2) str += "==";
+    else if (pad === 3) str += "=";
+    else if (pad !== 0) str += "==";
+    return str;
+  }
+
+  function tryParseJson(text) {
+    try {
+      return JSON.parse(text);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  // Thử parse JSON trực tiếp (trường hợp dữ liệu không nén)
   try {
-    // Chuyển đổi chuỗi Base64 về lại Uint8Array
-    const compressed = atob(base64String).split('').map(c => c.charCodeAt(0));
-    const jsonString = pako.inflate(new Uint8Array(compressed), { to: 'string' });
-    return JSON.parse(jsonString);
+    if (
+      typeof base64OrJsonString === "string" &&
+      base64OrJsonString.trim().startsWith("{")
+    ) {
+      return JSON.parse(base64OrJsonString);
+    }
+  } catch (_) {
+    // bỏ qua, sẽ thử giải nén bên dưới
+  }
+
+  try {
+    // Hỗ trợ khi dữ liệu là mảng số (byte array) được serialize
+    if (
+      typeof base64OrJsonString === "object" &&
+      base64OrJsonString &&
+      typeof base64OrJsonString.length === "number"
+    ) {
+      const byteArray = new Uint8Array(base64OrJsonString);
+      try {
+        const jsonString = pako.inflate(byteArray, { to: "string" });
+        return JSON.parse(jsonString);
+      } catch (_) {}
+      try {
+        const jsonString = pako.ungzip(byteArray, { to: "string" });
+        return JSON.parse(jsonString);
+      } catch (_) {}
+      try {
+        const jsonString = pako.inflateRaw(byteArray, { to: "string" });
+        return JSON.parse(jsonString);
+      } catch (inflateRawErr) {
+        console.error("Lỗi khi giải nén dữ liệu:", inflateRawErr);
+        return null;
+      }
+    }
+
+    if (typeof base64OrJsonString !== "string") return null;
+
+    let candidate = base64OrJsonString.trim();
+
+    // Nếu chuỗi có vẻ là JSON string double-encoded ("{...}")
+    const maybeDouble = tryParseJson(candidate);
+    if (typeof maybeDouble === "string") {
+      candidate = maybeDouble;
+    }
+
+    // Thử decodeURIComponent nếu có dạng URL-encoded
+    try {
+      if (/%(?:[0-9A-Fa-f]{2})/.test(candidate)) {
+        const decodedUri = decodeURIComponent(candidate);
+        if (decodedUri) candidate = decodedUri;
+      }
+    } catch (_) {}
+
+    // Thử cách public trước
+    const fromPublic = simpleDecompressLikePublic(candidate);
+    if (fromPublic) return fromPublic;
+
+    const normalized = normalizeBase64(candidate);
+    const binaryString = atob(normalized);
+    const byteArray = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      byteArray[i] = binaryString.charCodeAt(i);
+    }
+
+    // Trường hợp base64 là JSON thuần (không nén)
+    const jsonFromBinaryString = tryParseJson(binaryString);
+    if (jsonFromBinaryString) {
+      return jsonFromBinaryString;
+    }
+
+    try {
+      const decodedUtf8 =
+        typeof TextDecoder !== "undefined"
+          ? new TextDecoder("utf-8").decode(byteArray)
+          : null;
+      const jsonFromUtf8 = decodedUtf8 ? tryParseJson(decodedUtf8) : null;
+      if (jsonFromUtf8) {
+        return jsonFromUtf8;
+      }
+    } catch (_) {
+      // ignore
+    }
+
+    // Thử inflate (zlib/deflate)
+    try {
+      // Chọn thuật toán dựa trên header khi có thể
+      if (
+        byteArray.length >= 2 &&
+        byteArray[0] === 0x1f &&
+        byteArray[1] === 0x8b
+      ) {
+        // GZIP
+        const jsonString = pako.ungzip(byteArray, { to: "string" });
+        return JSON.parse(jsonString);
+      }
+      if (byteArray.length >= 2 && byteArray[0] === 0x78) {
+        // ZLIB header phổ biến (0x78 0x01/0x9C/0xDA)
+        const jsonString = pako.inflate(byteArray, { to: "string" });
+        return JSON.parse(jsonString);
+      }
+      // Mặc định thử inflate trước
+      const jsonString = pako.inflate(byteArray, { to: "string" });
+      return JSON.parse(jsonString);
+    } catch (inflateErr) {
+      // Thử ungzip
+      try {
+        const jsonString = pako.ungzip(byteArray, { to: "string" });
+        return JSON.parse(jsonString);
+      } catch (ungzipErr) {
+        // Thử inflateRaw như là phương án cuối
+        try {
+          const jsonString = pako.inflateRaw(byteArray, { to: "string" });
+          return JSON.parse(jsonString);
+        } catch (inflateRawErr) {
+          console.error("Lỗi khi giải nén dữ liệu:", inflateRawErr);
+          return null;
+        }
+      }
+    }
   } catch (error) {
     console.error("Lỗi khi giải nén dữ liệu:", error);
     return null;
@@ -608,6 +768,28 @@ const calculateDelta = (oldData, newData) => {
 
 // --- VERSION MANAGEMENT FUNCTIONS ---
 
+// Safely read version payload supporting both compressed and legacy formats
+function getVersionData(version) {
+  try {
+    if (!version) return null;
+    // New compressed format - delegate to robust decompressor
+    if (version.isCompressed && version.compressedData) {
+      const decompressed = decompressData(version.compressedData);
+      if (decompressed && typeof decompressed === "object") return decompressed;
+      console.warn(
+        "Compressed version detected but could not be decompressed via decompressData"
+      );
+      return null;
+    }
+    // Legacy inline JSON format
+    if (version.data) return version.data;
+    return null;
+  } catch (error) {
+    console.error("Failed to read version data:", error);
+    return null;
+  }
+}
+
 // Save current data as a new version
 async function saveVersion(dataToSave, versionNote = "") {
   try {
@@ -617,13 +799,17 @@ async function saveVersion(dataToSave, versionNote = "") {
     // NÉN DỮ LIỆU
     const compressedData = compressData(dataToSave);
     if (!compressedData) {
-        throw new Error("Không thể nén dữ liệu.");
+      throw new Error("Không thể nén dữ liệu.");
     }
     const compressedSize = compressedData.length;
 
     // Kiểm tra kích thước sau khi nén
     if (compressedSize > 1048576) {
-        throw new Error(`Dữ liệu sau khi nén (${Math.round(compressedSize / 1024)}KB) vẫn vượt quá giới hạn 1MB.`);
+      throw new Error(
+        `Dữ liệu sau khi nén (${Math.round(
+          compressedSize / 1024
+        )}KB) vẫn vượt quá giới hạn 1MB.`
+      );
     }
 
     // Get previous version for delta calculation
@@ -632,7 +818,7 @@ async function saveVersion(dataToSave, versionNote = "") {
       // Để tính delta, ta cần giải nén phiên bản cũ
       const previousData = await getVersionData(versionsData[0]);
       if (previousData) {
-          delta = calculateDelta(previousData, dataToSave);
+        delta = calculateDelta(previousData, dataToSave);
       }
     }
 
@@ -646,10 +832,10 @@ async function saveVersion(dataToSave, versionNote = "") {
       note: versionNote,
       delta: delta,
       size: compressedSize, // Lưu kích thước sau khi nén
-      originalSize: JSON.stringify(dataToSave).length
+      originalSize: JSON.stringify(dataToSave).length,
     };
 
-    await setDoc(doc(db, "versions", versionId), versionData);
+    await db.collection("versions").doc(versionId).set(versionData);
 
     versionsData.unshift(versionData);
     await cleanupOldVersions();
@@ -670,13 +856,11 @@ async function saveVersion(dataToSave, versionNote = "") {
 // Load all versions from Firestore
 async function loadVersions() {
   try {
-    const versionsQuery = query(
-      collection(db, "versions"),
-      orderBy("createdAt", "desc"),
-      limit(5)
-    );
-
-    const snapshot = await getDocs(versionsQuery);
+    const snapshot = await db
+      .collection("versions")
+      .orderBy("createdAt", "desc")
+      .limit(5)
+      .get();
     versionsData = [];
 
     snapshot.forEach((doc) => {
@@ -950,7 +1134,7 @@ async function cleanupOldVersions() {
       const versionsToDelete = versionsData.slice(5);
 
       for (const version of versionsToDelete) {
-        await deleteDoc(doc(db, "versions", version.versionId));
+        await db.collection("versions").doc(version.versionId).delete();
       }
 
       versionsData = versionsData.slice(0, 5);
@@ -962,38 +1146,36 @@ async function cleanupOldVersions() {
 }
 
 // Rollback to a specific version
-// admin-js/admin-main.js
+async function rollbackToVersion(versionId) {
+  try {
+    const version = versionsData.find((v) => v.versionId === versionId);
+    if (!version) {
+      throw new Error("Version not found");
+    }
 
-// Hàm trợ giúp để lấy dữ liệu phiên bản (đã cập nhật)
-// admin-js/admin-main.js
+    const data = getVersionData(version);
+    if (!data) {
+      throw new Error("Không đọc được dữ liệu phiên bản để rollback");
+    }
 
-// Hàm trợ giúp để lấy dữ liệu phiên bản (đã cập nhật)
-async function getVersionData(version) {
-  if (!version) return null;
+    // Update production data
+    const productionDocRef = db.collection("landingPage").doc("data");
+    await productionDocRef.set(data);
 
-  // Nếu có cờ isCompressed, giải nén
-  if (version.isCompressed && version.compressedData) {
-      return decompressData(version.compressedData);
-  }
+    // Update local data
+    brandsData = data.brands || {};
+    programHeaderData = data.header || programHeaderData;
 
-  // Dành cho các phiên bản cũ chưa nén
-  if (version.data) return version.data;
-
-  // Xử lý cho Cloud Storage (nếu bạn có dùng)
-  if (version.storagePath) {
-      try {
-          const storageRef = ref(storage, version.storagePath);
-          const url = await getDownloadURL(storageRef);
-          const response = await fetch(url);
-          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-          return await response.json();
-      } catch (error) {
-          console.error("Lỗi khi tải dữ liệu từ Storage:", error);
-          return null;
-      }
-  }
-  return null;
-}
+    // Refresh UI
+    renderBrandList();
+    if (currentBrandKey && brandsData[currentBrandKey]) {
+      showBrandDetail(currentBrandKey);
+    } else {
+      currentBrandKey = null;
+      mainContent.innerHTML = "";
+      mainContent.appendChild(welcomePlaceholder);
+      welcomePlaceholder.classList.remove("hidden");
+    }
 
     // Log activity
     await logActivity("rollback", `Rollback về phiên bản ${versionId}`, {
@@ -1037,16 +1219,15 @@ function refreshAllVersioningUI() {
 
 function isCurrentVersion(version) {
   try {
-    if (!version) return false;
-
-    // Lấy dữ liệu hiện tại và nén nó
-    const currentDataToCompare = { header: programHeaderData, brands: brandsData };
-    const compressedCurrentData = compressData(currentDataToCompare);
-
-    // So sánh chuỗi base64 đã nén
-    return version.compressedData === compressedCurrentData;
+    const data = getVersionData(version);
+    if (!data) return false;
+    const versionBrands = JSON.stringify(data.brands || {});
+    const currentBrands = JSON.stringify(brandsData || {});
+    const versionHeader = JSON.stringify(data.header || {});
+    const currentHeader = JSON.stringify(programHeaderData || {});
+    return currentBrands === versionBrands && currentHeader === versionHeader;
   } catch (error) {
-    console.error("Lỗi khi so sánh phiên bản:", error);
+    console.error("Error comparing version data:", error);
     return false;
   }
 }
@@ -1155,7 +1336,9 @@ window.previewVersion = async function (versionId) {
     const version = versionsData.find((v) => v.versionId === versionId);
     if (!version) return;
 
-    const brands = version.data.brands || {};
+    const data = getVersionData(version);
+    if (!data) return;
+    const brands = data.brands || {};
     const brandCount = Object.keys(brands).length;
 
     let previewHTML = `
@@ -1360,17 +1543,15 @@ function hideAllToasts() {
 }
 
 // Publish with custom note function
+// admin-js/admin-main.js
+
 async function publishWithNote(customNote = "") {
-  // Check authentication
   if (!isAuthenticated) {
     alert("Bạn cần đăng nhập để thực hiện chức năng này.");
     return;
   }
-
   if (Object.keys(brandsData).length === 0) {
-    alert(
-      "Không có dữ liệu để đăng tải. Vui lòng chờ dữ liệu từ Google Sheet."
-    );
+    alert("Không có dữ liệu để đăng tải.");
     return;
   }
 
@@ -1380,19 +1561,32 @@ async function publishWithNote(customNote = "") {
     lastUpdated: new Date().toISOString(),
   };
 
-  const productionDocRef = doc(db, "landingPage", "data");
   const note = customNote.trim() || "Auto-save khi publish";
 
   try {
-    // Save current version before publishing
+    // BƯỚC 1: LƯU PHIÊN BẢN (VERSION) ĐÃ NÉN (ĐÃ HOẠT ĐỘNG TỐT)
     await saveVersion(dataToPublish, note);
 
-    // Publish to production
-    await setDoc(productionDocRef, dataToPublish);
+    // BƯỚC 2: LƯU DỮ LIỆU LIVE CHO TRANG WEB (ĐÂY LÀ PHẦN CẦN SỬA)
+    console.log("Đang nén dữ liệu cho trang live...");
+    const compressedForProduction = compressData(dataToPublish);
+    if (!compressedForProduction) {
+      throw new Error("Không thể nén dữ liệu cho production.");
+    }
 
-    // Refresh versions list
-    await loadVersions();
+    const productionData = {
+      isCompressed: true,
+      compressedData: compressedForProduction,
+      // Thêm timestamp để trang public biết khi nào có cập nhật
+      lastUpdated: dataToPublish.lastUpdated,
+    };
 
+    const productionDocRef = db.collection("landingPage").doc("data");
+    console.log("Đang publish dữ liệu đã nén lên landingPage/data...");
+    await productionDocRef.set(productionData); // Gửi đi dữ liệu đã nén
+    console.log("Publish dữ liệu live thành công!");
+
+    await loadVersions(); // Tải lại danh sách versions để cập nhật UI
     return true;
   } catch (error) {
     console.error("Lỗi khi đăng tải dữ liệu:", error);
@@ -1718,7 +1912,7 @@ async function logActivity(type, description, details = {}) {
     };
 
     const activityId = `activity_${Date.now()}`;
-    await setDoc(doc(db, "activityLogs", activityId), activityData);
+    await db.collection("activityLogs").doc(activityId).set(activityData);
 
     // Add to local array
     activityLogs.unshift(activityData);
@@ -1737,13 +1931,11 @@ async function logActivity(type, description, details = {}) {
 // Load recent activity from Firebase
 async function loadRecentActivity() {
   try {
-    const activityQuery = query(
-      collection(db, "activityLogs"),
-      orderBy("timestamp", "desc"),
-      limit(10)
-    );
-
-    const snapshot = await getDocs(activityQuery);
+    const snapshot = await db
+      .collection("activityLogs")
+      .orderBy("timestamp", "desc")
+      .limit(10)
+      .get();
     activityLogs = [];
 
     snapshot.forEach((doc) => {
@@ -2607,10 +2799,10 @@ function renderPromotionTable(b) {
 // Load brand logos from Firestore
 async function loadBrandLogos() {
   try {
-    const logosDocRef = doc(db, "admin", "brandLogos");
-    const logosDoc = await getDoc(logosDocRef);
+    const logosDocRef = db.collection("admin").doc("brandLogos");
+    const logosDoc = await logosDocRef.get();
 
-    if (logosDoc.exists()) {
+    if (logosDoc.exists) {
       brandLogos = logosDoc.data();
       console.log("Loaded brand logos:", brandLogos);
     }
@@ -2623,8 +2815,8 @@ async function loadBrandLogos() {
 async function saveBrandLogo(brandKey, logoUrl) {
   try {
     brandLogos[brandKey] = logoUrl;
-    const logosDocRef = doc(db, "admin", "brandLogos");
-    await setDoc(logosDocRef, brandLogos);
+    const logosDocRef = db.collection("admin").doc("brandLogos");
+    await logosDocRef.set(brandLogos);
     console.log(`Saved logo for brand ${brandKey}:`, logoUrl);
   } catch (error) {
     console.error("Error saving brand logo:", error);
@@ -2659,8 +2851,8 @@ async function cleanupOrphanedLogos() {
 
     // Save if there were changes
     if (hasChanges) {
-      const logosDocRef = doc(db, "admin", "brandLogos");
-      await setDoc(logosDocRef, brandLogos);
+      const logosDocRef = db.collection("admin").doc("brandLogos");
+      await logosDocRef.set(brandLogos);
       console.log("Cleaned up orphaned logos");
     }
   } catch (error) {
@@ -2753,8 +2945,8 @@ window.editBrand = (key) => {
       if (confirm("Bạn có chắc muốn xóa logo đã upload?")) {
         try {
           delete brandLogos[key];
-          const logosDocRef = doc(db, "admin", "brandLogos");
-          await setDoc(logosDocRef, brandLogos);
+          const logosDocRef = db.collection("admin").doc("brandLogos");
+          await logosDocRef.set(brandLogos);
 
           // Refresh brand data
           mergeBrandLogos();
@@ -2794,8 +2986,8 @@ window.editBrand = (key) => {
       } else {
         // If URL is empty, remove the custom logo
         delete brandLogos[key];
-        const logosDocRef = doc(db, "admin", "brandLogos");
-        await setDoc(logosDocRef, brandLogos);
+        const logosDocRef = db.collection("admin").doc("brandLogos");
+        await logosDocRef.set(brandLogos);
       }
 
       modal.remove();
@@ -2924,17 +3116,27 @@ function setupRealtimeListener() {
   // Load brand logos first
   loadBrandLogos().then(() => {
     // Document "nháp" để admin xem trước (preview)
-    const previewDocRef = doc(db, "admin", "previewData");
+    const previewDocRef = db.collection("admin").doc("previewData");
 
-    onSnapshot(
-      previewDocRef,
+    const unsubscribe = previewDocRef.onSnapshot(
       (docSnap) => {
-        if (docSnap.exists()) {
+        if (docSnap.exists) {
           console.log("Dữ liệu Preview thay đổi, đang cập nhật UI...");
           const firestoreData = docSnap.data();
+          let resolvedData = firestoreData || {};
 
-          if (firestoreData.brands) {
-            brandsData = firestoreData.brands;
+          // Hỗ trợ cả dữ liệu nén và không nén
+          if (firestoreData && firestoreData.compressedData) {
+            const decompressed = decompressData(firestoreData.compressedData);
+            if (decompressed) {
+              resolvedData = decompressed;
+            } else {
+              console.warn("Không thể giải nén dữ liệu preview.");
+            }
+          }
+
+          if (resolvedData.brands) {
+            brandsData = resolvedData.brands;
 
             // Merge persisted logos with brand data
             mergeBrandLogos();
