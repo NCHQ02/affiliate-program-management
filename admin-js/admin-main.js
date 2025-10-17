@@ -982,6 +982,9 @@ function refreshAllVersioningUI() {
 // Check if a version matches current data
 function isCurrentVersion(version) {
   try {
+    if (!version || !version.data) {
+      return false;
+    }
     // Compare current brands data with version data
     const currentBrands = JSON.stringify(brandsData);
     const versionBrands = JSON.stringify(version.data.brands || {});
@@ -3254,4 +3257,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Don't auto-setup realtime listener anymore - it will be called by auth state observer
 // setupRealtimeListener();
-
