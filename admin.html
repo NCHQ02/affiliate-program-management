@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
     <meta charset="utf-8" />
     <title>Admin Dashboard – Affiliate Program Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -13,7 +12,13 @@
     <style>
       /* Additional admin-specific styles if needed */
     </style>
-  </head>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
+
+</head>
+
   <body class="antiasaed">
     <!-- Mobile Menu Toggle -->
     <button
@@ -1620,6 +1625,6 @@
     <!-- Firebase Config should be in a separate file, but here for portability -->
     <script src="firebase-config.js"></script>
 
-    <script type="module" src="admin-js/admin-main.js"></script>
+    <script  src="admin-js/admin-main.js"></script>
   </body>
 </html>
