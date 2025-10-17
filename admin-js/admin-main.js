@@ -283,6 +283,40 @@ const numParse = (s) => {
   return str ? parseFloat(str) : NaN;
 };
 
+// admin-js/admin-main.js
+
+// --- UTILITY FUNCTIONS ---
+
+// ... (các hàm cleanStr, rmAccent, norm,...)
+
+// === CÁC HÀM NÉN / GIẢI NÉN MỚI ===
+// Nén đối tượng JSON thành chuỗi Base64
+function compressData(data) {
+  try {
+    const jsonString = JSON.stringify(data);
+    const compressed = pako.deflate(jsonString);
+    // Chuyển đổi Uint8Array thành chuỗi Base64 để lưu trữ an toàn
+    const base64String = btoa(String.fromCharCode.apply(null, compressed));
+    return base64String;
+  } catch (error) {
+    console.error("Lỗi khi nén dữ liệu:", error);
+    return null;
+  }
+}
+
+// Giải nén chuỗi Base64 về lại đối tượng JSON
+function decompressData(base64String) {
+  try {
+    // Chuyển đổi chuỗi Base64 về lại Uint8Array
+    const compressed = atob(base64String).split('').map(c => c.charCodeAt(0));
+    const jsonString = pako.inflate(new Uint8Array(compressed), { to: 'string' });
+    return JSON.parse(jsonString);
+  } catch (error) {
+    console.error("Lỗi khi giải nén dữ liệu:", error);
+    return null;
+  }
+}
+
 // --- DASHBOARD FUNCTIONS ---
 
 // Calculate dashboard statistics
@@ -580,43 +614,55 @@ async function saveVersion(dataToSave, versionNote = "") {
     const timestamp = Date.now();
     const versionId = `v${timestamp}`;
 
+    // NÉN DỮ LIỆU
+    const compressedData = compressData(dataToSave);
+    if (!compressedData) {
+        throw new Error("Không thể nén dữ liệu.");
+    }
+    const compressedSize = compressedData.length;
+
+    // Kiểm tra kích thước sau khi nén
+    if (compressedSize > 1048576) {
+        throw new Error(`Dữ liệu sau khi nén (${Math.round(compressedSize / 1024)}KB) vẫn vượt quá giới hạn 1MB.`);
+    }
+
     // Get previous version for delta calculation
     let delta = null;
     if (versionsData.length > 0) {
-      const previousVersion = versionsData[0];
-      delta = calculateDelta(previousVersion.data, dataToSave);
+      // Để tính delta, ta cần giải nén phiên bản cũ
+      const previousData = await getVersionData(versionsData[0]);
+      if (previousData) {
+          delta = calculateDelta(previousData, dataToSave);
+      }
     }
 
     const versionData = {
       versionId,
-      data: dataToSave,
+      // Lưu dữ liệu đã nén
+      compressedData: compressedData,
+      isCompressed: true, // Thêm cờ để nhận biết
       createdAt: new Date().toISOString(),
       createdBy: currentUser?.email || "unknown",
       note: versionNote,
       delta: delta,
-      size: JSON.stringify(dataToSave).length,
+      size: compressedSize, // Lưu kích thước sau khi nén
+      originalSize: JSON.stringify(dataToSave).length
     };
 
-    // Save to Firestore
     await setDoc(doc(db, "versions", versionId), versionData);
 
-    // Update local versions list
     versionsData.unshift(versionData);
-
-    // Keep only 5 most recent versions
     await cleanupOldVersions();
-
-    // Log activity
     await logActivity("publish", `Xuất bản phiên bản ${versionId}`, {
       versionId,
       note: versionNote,
       brandsCount: Object.keys(dataToSave.brands || {}).length,
     });
 
-    console.log(`Version ${versionId} saved successfully`);
+    console.log(`Phiên bản nén ${versionId} đã được lưu thành công`);
     return versionId;
   } catch (error) {
-    console.error("Error saving version:", error);
+    console.error("Lỗi khi lưu phiên bản nén:", error);
     throw error;
   }
 }
@@ -916,31 +962,38 @@ async function cleanupOldVersions() {
 }
 
 // Rollback to a specific version
-async function rollbackToVersion(versionId) {
-  try {
-    const version = versionsData.find((v) => v.versionId === versionId);
-    if (!version) {
-      throw new Error("Version not found");
-    }
+// admin-js/admin-main.js
 
-    // Update production data
-    const productionDocRef = doc(db, "landingPage", "data");
-    await setDoc(productionDocRef, version.data);
+// Hàm trợ giúp để lấy dữ liệu phiên bản (đã cập nhật)
+// admin-js/admin-main.js
 
-    // Update local data
-    brandsData = version.data.brands || {};
-    programHeaderData = version.data.header || programHeaderData;
+// Hàm trợ giúp để lấy dữ liệu phiên bản (đã cập nhật)
+async function getVersionData(version) {
+  if (!version) return null;
 
-    // Refresh UI
-    renderBrandList();
-    if (currentBrandKey && brandsData[currentBrandKey]) {
-      showBrandDetail(currentBrandKey);
-    } else {
-      currentBrandKey = null;
-      mainContent.innerHTML = "";
-      mainContent.appendChild(welcomePlaceholder);
-      welcomePlaceholder.classList.remove("hidden");
-    }
+  // Nếu có cờ isCompressed, giải nén
+  if (version.isCompressed && version.compressedData) {
+      return decompressData(version.compressedData);
+  }
+
+  // Dành cho các phiên bản cũ chưa nén
+  if (version.data) return version.data;
+
+  // Xử lý cho Cloud Storage (nếu bạn có dùng)
+  if (version.storagePath) {
+      try {
+          const storageRef = ref(storage, version.storagePath);
+          const url = await getDownloadURL(storageRef);
+          const response = await fetch(url);
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+          return await response.json();
+      } catch (error) {
+          console.error("Lỗi khi tải dữ liệu từ Storage:", error);
+          return null;
+      }
+  }
+  return null;
+}
 
     // Log activity
     await logActivity("rollback", `Rollback về phiên bản ${versionId}`, {
@@ -980,22 +1033,20 @@ function refreshAllVersioningUI() {
 }
 
 // Check if a version matches current data
+// admin-js/admin-main.js
+
 function isCurrentVersion(version) {
   try {
-    if (!version || !version.data) {
-      return false;
-    }
-    // Compare current brands data with version data
-    const currentBrands = JSON.stringify(brandsData);
-    const versionBrands = JSON.stringify(version.data.brands || {});
+    if (!version) return false;
 
-    // Also compare header data
-    const currentHeader = JSON.stringify(programHeaderData);
-    const versionHeader = JSON.stringify(version.data.header || {});
+    // Lấy dữ liệu hiện tại và nén nó
+    const currentDataToCompare = { header: programHeaderData, brands: brandsData };
+    const compressedCurrentData = compressData(currentDataToCompare);
 
-    return currentBrands === versionBrands && currentHeader === versionHeader;
+    // So sánh chuỗi base64 đã nén
+    return version.compressedData === compressedCurrentData;
   } catch (error) {
-    console.error("Error comparing version data:", error);
+    console.error("Lỗi khi so sánh phiên bản:", error);
     return false;
   }
 }
