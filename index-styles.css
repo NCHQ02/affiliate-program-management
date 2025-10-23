@@ -4006,30 +4006,36 @@ td.text-blue-400.font-bold {
 
 /* Card có Voucher (Để làm nổi bật như màu vàng trong hình) */
 .promotion-card.voucher-card {
-  border-color: #f59e0b; /* amber-600 */
-  background-color: var(--warm-bg); /* Màu nền ấm hơn */
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.15);
+  border-color: #a6e9ba; /* amber-300 - nhạt hơn */
+  background-color: #ffffff; /* nhẹ hơn var(--warm-bg) */
+  box-shadow: 0 0 8px rgba(243, 239, 232, 0.1);
 }
 
 /* Header (Tên sản phẩm và Loại) */
 .card-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start; /* Align items to the top for wrapping */
   padding-bottom: 0.75rem;
   margin-bottom: 0.75rem;
   border-bottom: 1px solid var(--border-color);
+  gap: 10px; /* Add gap between name and type */
 }
 
 .product-name {
   font-size: 1.125rem;
   font-weight: 700;
   color: var(--text-dark);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex-grow: 1;
-  margin-right: 10px;
+  /* Remove white-space, overflow, text-overflow */
+  /* white-space: nowrap; */
+  /* overflow: hidden; */
+  /* text-overflow: ellipsis; */
+  word-break: break-word; /* Allow word breaking */
+  overflow-wrap: break-word; /* Ensure wrapping */
+  flex-grow: 1; /* Allow name to take available space */
+  /* Remove margin-right if gap is used */
+  /* margin-right: 10px; */
+  line-height: 1.3; /* Adjust line height for wrapped text */
 }
 
 .product-type {
@@ -4040,7 +4046,9 @@ td.text-blue-400.font-bold {
   padding: 0.25rem 0.5rem;
   border-radius: 9999px;
   text-transform: uppercase;
-  flex-shrink: 0;
+  flex-shrink: 0; /* Prevent type from shrinking */
+  white-space: nowrap; /* Keep type on one line */
+  align-self: flex-start; /* Keep type aligned to the top */
 }
 
 /* Body (Các thông tin chi tiết) */
@@ -4063,6 +4071,52 @@ td.text-blue-400.font-bold {
 .info-item {
   display: flex;
   flex-direction: column;
+}
+
+/* Đặc biệt cho platform info - hiển thị kênh bán và loại trên cùng một hàng */
+.info-item.platform {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.info-item.platform > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-item.platform .label {
+  margin-bottom: 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.info-item.platform .value {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.info-item.platform .product-type {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background-color: var(--secondary-bg);
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Hiển thị Giá Voucher rõ ràng, xuống dòng và cỡ chữ nhỏ hơn */
+.info-item.voucher-code .value {
+  font-size: 0.85rem;
+  line-height: 1.4;
 }
 
 .label {
@@ -4096,6 +4150,7 @@ td.text-blue-400.font-bold {
 .value-highlight-blue {
   font-weight: 700;
   color: var(--primary-accent); /* Màu xanh dương nổi bật cho Voucher */
+  word-break: break-all; /* Break long voucher codes/numbers */
 }
 
 /* Quà tặng */
@@ -4188,5 +4243,12 @@ td.text-blue-400.font-bold {
   }
   .filter-bar select {
     min-width: 100%;
+  }
+}
+
+/* Additional fix for very long product names on small screens */
+@media (max-width: 360px) {
+  .product-name {
+    font-size: 0.9rem;
   }
 }
