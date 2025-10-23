@@ -238,25 +238,28 @@
           })
           .replace(/,/g, ".") + "đ";
 
-      // Sửa lỗi: Hàm formatVoucher chỉ định dạng tiền tệ nếu giá trị là số
+      // Sửa lỗi: Chỉ định dạng tiền tệ khi giá trị là số thuần; nếu là text (vd: "5% CAP 150K ĐƠN 600K") thì giữ nguyên
       const formatVoucher = (v) => {
         const rawValue = String(v || "").trim();
+        if (!rawValue) return "";
 
-        // Thử loại bỏ các ký tự không phải số và dấu chấm, phẩy
-        const numCandidate = rawValue.replace(/[^0-9]/g, "");
-        const num = parseFloat(numCandidate);
+        // Chỉ coi là số khi CHỈ chứa chữ số, khoảng trắng, dấu . , và có thể kèm hậu tố tiền tệ
+        // Ví dụ hợp lệ: "150000", "150.000", "150,000", "150 000", "150000đ", "150.000 vnđ"
+        // Ví dụ KHÔNG định dạng: có chữ cái khác như %, k, cap, đơn...
+        const numericLike = /^\s*[0-9.,\s]+(?:đ|vnd|vnđ)?\s*$/i.test(rawValue);
+        if (!numericLike) return rawValue; // Có text lẫn, giữ nguyên
 
-        if (
-          !isNaN(num) &&
-          numCandidate.length > 0 &&
-          numCandidate.length < 16
-        ) {
-          // Nếu là số và không quá dài (để loại trừ các mã ID dài), định dạng thành tiền tệ
-          return currency(num);
-        }
+        // Chuẩn hoá: bỏ mọi ký tự không phải số
+        const digitsOnly = rawValue.replace(/[^0-9]/g, "");
+        if (!digitsOnly) return rawValue;
 
-        // Nếu không phải số hoặc là chuỗi mã, giữ nguyên
-        return rawValue;
+        // Tránh định dạng các chuỗi quá dài (nguy cơ là ID)
+        if (digitsOnly.length > 15) return rawValue;
+
+        const asNumber = Number(digitsOnly);
+        if (!isFinite(asNumber)) return rawValue;
+
+        return currency(asNumber);
       };
 
       const escapeHtml = (text) => {
@@ -359,8 +362,8 @@
                   event.link
                     ? `
                   <p style="margin-bottom: 8px;">
-                    <strong>Liên kết:</strong> 
-                    <a href="${event.link}" target="_blank" rel="noopener" 
+                    <strong>Liên kết:</strong>
+                    <a href="${event.link}" target="_blank" rel="noopener"
                       style="color: var(--primary-accent); text-decoration: underline;">
                       Xem chi tiết tại đây
                     </a>
@@ -1018,25 +1021,41 @@
               const salePrice = isFinite(Number(x.sale))
                 ? currency(x.sale)
                 : "Cập nhật";
-              const voucher = formatVoucher(x.voucher);
+              // Chuẩn hoá hiển thị voucher: chèn xuống dòng giữa các cặp "15k/159k 20k/199k ..."
+              const normalizeVoucherText = (t) => {
+                const s = String(t || "").trim();
+                if (!s) return "";
+                // Thay thế nhiều khoảng trắng bằng một khoảng trắng
+                const compact = s.replace(/\s+/g, " ");
+                // Nếu là dạng nhiều cặp "xxk/yyyk" cách nhau bằng khoảng trắng, chèn <br> giữa các cặp
+                // VD: "15k/159k 20k/199k 25k/299k" => "15k/159k<br>20k/199k<br>25k/299k"
+                const withBreaks = compact.replace(
+                  /(\b\d+\s*[kK]\s*\/\s*\d+\s*[kK]\b)\s+(?=\d+\s*[kK]\s*\/)/g,
+                  "$1<br>"
+                );
+                return withBreaks;
+              };
+
+              const voucher = formatVoucher(normalizeVoucherText(x.voucher)); // Sử dụng hàm đã sửa
               const period = escapeHtml(x.period || "Không rõ");
 
-              const cardClass =
-                voucher && !currency(voucher) ? "voucher-card" : ""; // Chỉ highlight nếu có voucher và không phải là giá trị tiền tệ
+              const cardClass = voucher ? "voucher-card" : ""; // Highlight nếu có voucher
               const hasExtraInfo = x.extra && x.extra.trim() !== "";
 
               return `
                   <div class="promotion-card ${cardClass} animate-fade-in-up">
                       <div class="card-header">
                           <span class="product-name" title="${name}">${name}</span>
-                          <span class="product-type">Loại: ${type}</span>
                       </div>
 
                       <div class="card-body">
-                          
+
                           <div class="info-item platform">
-                              <span class="label">Kênh bán</span>
-                              <span class="value">${platform}</span>
+                              <div>
+                                  <span class="label">Kênh bán</span>
+                                  <span class="value">${platform}</span>
+                              </div>
+                              <span class="product-type">Loại: ${type}</span>
                           </div>
 
                           <div class="price-group">
@@ -1062,7 +1081,7 @@
                                   <span class="value period-value">${period}</span>
                               </div>
                           </div>
-                          
+
                           <!-- Quà Tặng -->
                           ${
                             x.gift && x.gift.trim() !== ""
@@ -1089,12 +1108,12 @@
                           `
                               : "<span></span>"
                           }
-                          
+
                           ${
                             x.link
                               ? `
                           <a href="${x.link}" target="_blank" rel="noopener" class="link-btn" title="Mở liên kết">
-                              Link Mua Hàng →
+                              Link Sản Phẩm →
                           </a>
                           `
                               : ""
@@ -1135,9 +1154,8 @@
           const nameInput = document.getElementById("filterName");
           if (nameInput) {
             nameInput.value = window.__currentPromoFilterName || "";
-            nameInput.focus();
-            nameInput.selectionStart = nameInput.selectionEnd =
-              nameInput.value.length;
+            // nameInput.focus(); // Tạm thời bỏ focus để không bị scroll nhảy
+            // nameInput.selectionStart = nameInput.selectionEnd = nameInput.value.length; // Tạm thời bỏ focus
           }
           if (document.getElementById("filterType"))
             document.getElementById("filterType").value =
@@ -1180,7 +1198,7 @@
             const matchName =
               !nameQuery ||
               norm(p.name || "").includes(nameQuery) ||
-              norm(p.sku || "").includes(nameQuery);
+              norm(p.sku || "").includes(nameQuery); // Allow searching by SKU too
             const matchType = !typeQuery || p.type === typeQuery;
             const matchPlatform =
               !platformQuery || p.platform === platformQuery;
@@ -1319,10 +1337,11 @@
               typeof pako !== "undefined"
             ) {
               try {
-                const compressed = atob(rawData.compressedData)
+                // Giải nén bằng cách của admin-main.js (tương thích hơn)
+                const bytes = atob(rawData.compressedData)
                   .split("")
                   .map((c) => c.charCodeAt(0));
-                const jsonString = pako.inflate(new Uint8Array(compressed), {
+                const jsonString = pako.inflate(new Uint8Array(bytes), {
                   to: "string",
                 });
                 finalData = JSON.parse(jsonString);
