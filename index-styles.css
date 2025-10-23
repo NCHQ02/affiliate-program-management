@@ -1340,7 +1340,7 @@ header {
   border-radius: 2px;
 }
 
-/* Enhanced table styling */
+/* Enhanced table styling (RETAINED FOR TOP SKU SECTION) */
 .table-wrap {
   overflow-x: auto;
   border: 1px solid var(--border-color);
@@ -1597,7 +1597,7 @@ header {
   font-size: 16px;
 }
 
-/* === BẢNG DỮ LIỆU === */
+/* === BẢNG DỮ LIỆU CŨ (RETAINED FOR COMPATIBILITY) === */
 .table-wrap {
   overflow-x: auto;
   border: 1px solid var(--border-color);
@@ -2253,11 +2253,11 @@ td a:hover {
   0%,
   100% {
     box-shadow: 0 4px 16px rgba(59, 130, 246, 0.6);
-    transform: scale(1.1);
+    transform: scale(1); /* Giữ nguyên scale để không ảnh hưởng đến day:hover */
   }
   50% {
     box-shadow: 0 6px 20px rgba(59, 130, 246, 0.8);
-    transform: scale(1.12);
+    transform: scale(1.05); /* Chỉ scale nhẹ */
   }
 }
 
@@ -2373,6 +2373,12 @@ td a:hover {
   text-overflow: unset !important;
   word-break: keep-all !important;
   display: block !important;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary-accent);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .custom-tooltip h4 {
@@ -3131,31 +3137,33 @@ footer::before {
   }
 
   #brandSearch {
-    padding: 12px 14px 12px 44px;
-    font-size: 14px;
-    border-radius: 10px;
+    padding: 14px 16px 14px 48px;
+    font-size: 15px;
+    border-radius: 12px;
   }
 
-  .detail-panel {
-    padding: 20px;
-    margin-top: 20px;
-    border-radius: 16px;
+  .search-filters {
+    gap: 8px;
   }
 
-  h2 {
-    font-size: 1.4em;
+  .filter-chip {
+    padding: 8px 16px;
+    font-size: 13px;
   }
 
-  h3 {
-    font-size: 1.1em;
+  .brands-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
   }
 
-  .nav-container {
-    padding: 0 12px;
+  .brands-title {
+    font-size: 1.5em;
   }
 
-  .logo-image {
-    height: 35px;
+  .brands-count {
+    font-size: 13px;
+    padding: 6px 12px;
   }
 
   .brand-buttons {
@@ -3363,26 +3371,13 @@ footer::before {
     font-size: 12px;
   }
 
+  .product-info-btn {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+
   .popup-content {
-    padding: 16px;
-    max-width: 95vw;
-    max-height: 85vh;
     margin: 10px;
-    border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-  }
-
-  .popup-overlay {
-    align-items: flex-start;
-    padding-top: 5vh;
-  }
-
-  .popup-title {
-    font-size: 1.3em;
-  }
-
-  .popup-body {
-    font-size: 13px;
   }
 
   section {
@@ -3391,189 +3386,61 @@ footer::before {
 }
 
 @media (max-width: 480px) {
-  .container {
-    padding: 0 12px;
-    margin: 16px auto;
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .hero {
-    padding: 40px 12px;
-    min-height: 50vh;
-  }
-
-  .hero-features {
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    padding: 0 8px;
-    justify-content: center;
-    justify-items: center;
-    margin: 0 auto 24px;
-  }
-
-  .floating-cards {
-    display: none;
-  }
-
-  .feature-item {
-    padding: 14px 10px;
-    font-size: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    margin: 0;
-  }
-
-  .search-icon {
-    left: 12px;
-    width: 16px;
-    height: 16px;
-  }
-
-  .search-filters {
-    gap: 4px;
-    padding: 0 4px;
-  }
-
-  .filter-chip {
-    padding: 6px 4px;
-    font-size: 10px;
-    flex: 1;
-    min-width: 0;
-    width: 100%;
-    height: 55px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    white-space: normal;
-    line-height: 1.1;
-  }
-
-  .title-main {
-    font-size: 1em;
-  }
-
-  .title-brand {
-    font-size: 1.5em;
-    letter-spacing: -0.5px;
-  }
-
-  .hero p {
-    font-size: 0.95em;
-    margin-bottom: 20px;
-  }
-
-  .cta-button {
-    padding: 12px 24px;
-    font-size: 14px;
-    min-width: 160px;
-  }
-
-  h2 {
+  .hero h1 {
     font-size: 1.8em;
   }
 
-  h3 {
-    font-size: 1.2em;
+  .hero p {
+    font-size: 0.9em;
   }
 
-  .logo-image {
-    height: 30px;
+  h2 {
+    font-size: 1.6em;
   }
 
   .brand-buttons {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 12px;
-    padding: 0 8px;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
   }
 
   .brand-btn {
-    padding: 14px 10px;
-    font-size: 12px;
-    min-height: 80px;
-    border-radius: 12px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    min-height: 55px;
+    padding: 6px;
+    font-size: 10px;
   }
 
   .brand-btn img {
-    max-height: 26px;
-    margin-bottom: 6px;
+    max-height: 18px;
   }
 
-  .filter-bar {
-    grid-template-columns: 1fr;
-    gap: 6px;
-    padding: 8px;
+  .program-text {
+    font-size: 14px;
   }
 
-  .filter-bar input {
-    grid-column: span 1;
+  .calendar {
+    gap: 2px;
+    padding: 4px;
   }
 
-  .filter-bar input,
-  .filter-bar select {
-    padding: 6px 8px;
-    font-size: 12px;
+  .day {
+    padding: 4px 0;
+    font-size: 10px;
+    min-height: 30px;
   }
 
-  .pagination {
-    padding: 6px 8px;
-    margin: 8px 0;
+  .table-wrap {
+    font-size: 10px;
   }
 
-  .pagination > div:first-child {
-    font-size: 11px;
-  }
-
-  .btn {
-    padding: 4px 8px;
-    font-size: 11px;
+  th,
+  td {
+    padding: 4px 2px;
+    font-size: 10px;
   }
 
   .product-info-btn {
     padding: 3px 6px;
     font-size: 9px;
-  }
-
-  .table-wrap {
-    font-size: 10px;
-    border-radius: 6px;
-  }
-
-  table {
-    min-width: 500px;
-  }
-
-  th,
-  td {
-    padding: 6px 4px;
-    font-size: 10px;
-  }
-
-  thead th {
-    font-size: 9px;
-    padding: 4px 2px;
-  }
-
-  .calendar {
-    gap: 2px;
-    padding: 6px;
-  }
-
-  .day {
-    padding: 6px 0;
-    font-size: 11px;
-    min-height: 35px;
-  }
-
-  .custom-tooltip {
-    max-width: 500px;
-    font-size: 11px;
   }
 
   .popup-content {
@@ -3582,65 +3449,21 @@ footer::before {
   }
 
   .popup-title {
-    font-size: 1.2em;
+    font-size: 1.1em;
   }
 
   .popup-body {
     font-size: 12px;
   }
 
-  .table-wrap {
-    font-size: 10px;
-  }
-
-  table {
-    min-width: 500px;
-  }
-
-  th,
-  td {
-    padding: 6px 4px;
-    font-size: 10px;
-  }
-
-  .product-info-btn {
-    padding: 4px 8px;
-    font-size: 10px;
-  }
-
-  section {
-    padding: 30px 0;
-  }
-
-  .calendar {
-    gap: 3px;
+  .faq-question {
     padding: 12px;
-    border-radius: 10px;
-    margin: 0 -8px;
+    font-size: 13px;
   }
 
-  .day {
-    padding: 8px 2px;
-    font-size: 12px;
-    min-height: 38px;
-    border-radius: 6px;
-    word-wrap: break-word;
-  }
-
-  .calendar-nav .btn {
-    width: 32px;
-    height: 32px;
-    font-size: 12px;
-  }
-
-  .calendar-nav h4 {
-    font-size: 14px;
-    min-width: 120px;
-  }
-
-  .calendar-controls select {
-    min-width: 140px;
-    font-size: 11px;
+  .faq-answer p {
+    padding: 0 12px 12px 12px;
+    margin-left: 12px;
   }
 
   .calendar {
@@ -3744,16 +3567,63 @@ footer::before {
   }
 }
 
-/* --- Mobile Calendar Improvements --- */
-.calendar-day-clickable {
-  -webkit-tap-highlight-color: rgba(59, 130, 246, 0.3);
-  -tap-highlight-color: rgba(59, 130, 246, 0.3);
+/* --- Mobile Table Improvements --- */
+@media (max-width: 768px) {
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -12px;
+    padding: 0 12px;
+  }
+
+  table {
+    min-width: 1200px;
+    font-size: 11px;
+  }
+
+  th,
+  td {
+    padding: 8px 6px;
+    font-size: 11px;
+    line-height: 1.3;
+  }
+
+  thead th {
+    font-size: 10px;
+    padding: 10px 6px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    text-align: center;
+    min-width: 80px;
+  }
+
+  .product-info-btn {
+    padding: 4px 8px;
+    font-size: 9px;
+    border-radius: 4px;
+  }
 }
 
-.calendar-day-clickable:active {
-  background-color: rgba(59, 130, 246, 0.2) !important;
-  transform: scale(0.95);
-  transition: all 0.1s ease;
+/* Voucher price styling */
+.text-blue-400 {
+  color: #60a5fa !important; /* blue-400 equivalent */
+}
+
+.font-bold {
+  font-weight: 700 !important;
+}
+
+/* Enhanced voucher price styling (RETAINED FOR COMPATIBILITY) */
+td.text-blue-400.font-bold {
+  color: #60a5fa !important; /* red-600 - màu đỏ nổi bật */
+  font-weight: 700 !important;
+  font-size: 0.9em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  /* background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); */
+  border-radius: 4px;
+  padding: 4px 6px;
+  /* border: 1px solid #fecaca;
+  box-shadow: 0 1px 3px rgba(220, 38, 38, 0.1); */
 }
 
 /* --- Mobile-specific improvements --- */
@@ -4053,201 +3923,270 @@ footer::before {
     padding: 0 12px 12px 12px;
     margin-left: 12px;
   }
-}
 
-/* --- Mobile Table Improvements --- */
-@media (max-width: 768px) {
-  .table-wrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    margin: 0 -12px;
-    padding: 0 12px;
+  .calendar {
+    gap: 3px;
+    padding: 12px;
+    border-radius: 10px;
   }
 
-  table {
-    min-width: 1200px;
-    font-size: 11px;
-  }
-
-  th,
-  td {
-    padding: 8px 6px;
-    font-size: 11px;
-    line-height: 1.3;
-  }
-
-  thead th {
+  .dow {
     font-size: 10px;
-    padding: 10px 6px;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-    text-align: center;
-    min-width: 80px;
+    padding: 6px 0;
+    margin-bottom: 2px;
   }
 
-  .product-info-btn {
-    padding: 4px 8px;
-    font-size: 9px;
-    border-radius: 4px;
+  .day {
+    padding: 8px 2px;
+    font-size: 12px;
+    min-height: 38px;
+    border-radius: 6px;
   }
 
-  th:nth-child(1),
-  td:nth-child(1) {
-    width: 12%;
-  } /* Loại */
-  th:nth-child(2),
-  td:nth-child(2) {
-    width: 25%;
-  } /* Sản phẩm */
-  th:nth-child(3),
-  td:nth-child(3) {
-    width: 16%;
-  } /* Platform */
-  th:nth-child(4),
-  td:nth-child(4) {
-    width: 16%;
-  } /* Giá gốc */
-  th:nth-child(5),
-  td:nth-child(5) {
-    width: 15%;
-  } /* Giá bán */
-  th:nth-child(6),
-  td:nth-child(6) {
-    width: 18%;
-  } /* Quà */
-  th:nth-child(7),
-  td:nth-child(7) {
-    width: 15%;
-  } /* Voucher */
-  th:nth-child(8),
-  td:nth-child(8) {
-    width: 12%;
-  } /* Cụm ngày */
-  th:nth-child(9),
-  td:nth-child(9) {
-    width: 18%;
-  } /* Thông tin SP */
-  th:nth-child(10),
-  td:nth-child(10) {
-    width: 10%;
-  } /* Link */
+  .calendar-header {
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .calendar-nav {
+    gap: 6px;
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+
+  .calendar-nav .btn {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+    padding: 6px;
+  }
+
+  .calendar-nav h4 {
+    font-size: 14px;
+    min-width: 120px;
+  }
+
+  .calendar-controls select {
+    min-width: 160px;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
 }
 
-/* Voucher price styling */
-.text-blue-400 {
-  color: #60a5fa !important; /* blue-400 equivalent */
+/* ==================================================== */
+/* BỔ SUNG CSS CHO GIAO DIỆN CARD PROMOTION MỚI */
+/* ==================================================== */
+
+/* Container Lưới cho các Card */
+#promotionCardsContainer {
+  display: grid;
+  /* Hiển thị tối thiểu 1 cột (di động) và 2-3 cột trên màn hình lớn */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem; /* Khoảng cách giữa các card */
+  margin-top: 1.5rem;
 }
 
-.font-bold {
-  font-weight: 700 !important;
+/* Định kiểu cho mỗi Card */
+.promotion-card {
+  background-color: #ffffff; /* Màu nền trắng */
+  border: 1px solid var(--border-color); /* Đường viền nhẹ (slate-200) */
+  border-radius: 0.75rem; /* Bo góc */
+  padding: 1rem;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 15px var(--soft-shadow);
 }
 
-/* Enhanced voucher price styling */
-td.text-blue-400.font-bold {
-  color: #60a5fa !important; /* red-600 - màu đỏ nổi bật */
-  font-weight: 700 !important;
-  font-size: 0.9em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  /* background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); */
-  border-radius: 4px;
-  padding: 4px 6px;
-  /* border: 1px solid #fecaca;
-  box-shadow: 0 1px 3px rgba(220, 38, 38, 0.1); */
+.promotion-card:hover {
+  transform: translateY(-4px); /* Hiệu ứng nâng lên khi hover */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  border-color: var(--primary-accent); /* Đổi màu viền khi hover */
 }
 
+/* Card có Voucher (Để làm nổi bật như màu vàng trong hình) */
+.promotion-card.voucher-card {
+  border-color: #f59e0b; /* amber-600 */
+  background-color: var(--warm-bg); /* Màu nền ấm hơn */
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.15);
+}
+
+/* Header (Tên sản phẩm và Loại) */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.product-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.product-type {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background-color: var(--secondary-bg);
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+/* Body (Các thông tin chi tiết) */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex-grow: 1;
+  padding: 0.5rem 0;
+}
+
+.price-group,
+.info-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.price-item,
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.original-price .value {
+  color: #9ca3af; /* Màu xám cho giá gốc */
+  text-decoration: line-through;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.value-highlight {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--accent-green); /* Màu xanh lá nổi bật cho Giá Sale */
+  line-height: 1.2;
+}
+
+.value-highlight-blue {
+  font-weight: 700;
+  color: var(--primary-accent); /* Màu xanh dương nổi bật cho Voucher */
+}
+
+/* Quà tặng */
+.gift-item {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--secondary-bg);
+  grid-column: span 2; /* Chiếm hết 2 cột */
+}
+
+/* Footer (Nút hành động) */
+.card-footer {
+  padding-top: 1rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-btn {
+  background-color: var(--primary-accent);
+  color: white;
+  padding: 0.45rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+.info-btn:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
+}
+
+.link-btn {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary-accent);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.link-btn:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Responsive adjustments for Card UI */
 @media (max-width: 480px) {
-  .table-wrap {
-    margin: 0 -8px;
-    padding: 0 8px;
+  #promotionCardsContainer {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
-  table {
-    min-width: 1000px;
-    font-size: 10px;
+  .promotion-card {
+    padding: 0.75rem;
   }
 
-  th,
-  td {
-    padding: 6px 4px;
-    font-size: 10px;
-    line-height: 1.2;
+  .product-name {
+    font-size: 1rem;
   }
 
-  thead th {
-    font-size: 9px;
-    padding: 8px 4px;
-    letter-spacing: 0.3px;
-    white-space: nowrap;
-    text-align: center;
-    min-width: 70px;
+  .product-type {
+    font-size: 0.65rem;
   }
 
-  .product-info-btn {
-    padding: 3px 6px;
-    font-size: 8px;
-    border-radius: 4px;
+  .value-highlight {
+    font-size: 1.15rem;
   }
 
-  th:nth-child(1),
-  td:nth-child(1) {
-    width: 12%;
-  } /* Loại */
-  th:nth-child(2),
-  td:nth-child(2) {
-    width: 25%;
-  } /* Sản phẩm */
-  th:nth-child(3),
-  td:nth-child(3) {
-    width: 16%;
-  } /* Platform */
-  th:nth-child(4),
-  td:nth-child(4) {
-    width: 16%;
-  } /* Giá gốc */
-  th:nth-child(5),
-  td:nth-child(5) {
-    width: 15%;
-  } /* Giá bán */
-  th:nth-child(6),
-  td:nth-child(6) {
-    width: 18%;
-  } /* Quà */
-  th:nth-child(7),
-  td:nth-child(7) {
-    width: 15%;
-  } /* Voucher */
-  th:nth-child(8),
-  td:nth-child(8) {
-    width: 12%;
-  } /* Cụm ngày */
-  th:nth-child(9),
-  td:nth-child(9) {
-    width: 18%;
-  } /* Thông tin SP */
-  th:nth-child(10),
-  td:nth-child(10) {
-    width: 10%;
-  } /* Link */
-}
+  .info-btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
 
-/* Voucher price styling */
-.text-blue-400 {
-  color: #60a5fa !important; /* blue-400 equivalent */
-}
+  .link-btn {
+    font-size: 0.8rem;
+  }
 
-.font-bold {
-  font-weight: 700 !important;
-}
-
-/* Enhanced voucher price styling */
-td.text-blue-400.font-bold {
-  color: #60a5fa !important; /* red-600 - màu đỏ nổi bật */
-  font-weight: 700 !important;
-  font-size: 0.9em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  /* background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); */
-  border-radius: 4px;
-  padding: 4px 6px;
-  /* border: 1px solid #fecaca; */
-  /* box-shadow: 0 1px 3px rgba(220, 38, 38, 0.1); */
+  .filter-bar {
+    grid-template-columns: 1fr;
+  }
+  .filter-bar input {
+    grid-column: span 1;
+  }
+  .filter-bar select {
+    min-width: 100%;
+  }
 }
